@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+#include "RoadScene.h"
 
 // SIzx Cats logger defines
 #include "SixCatsLogger.h"
@@ -18,9 +18,9 @@ static const float kSingleMoveInterval = 2.0;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-Scene* HelloWorldScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
+Scene* RoadScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
-  HelloWorldScene *pRet = new(std::nothrow) HelloWorldScene();
+  RoadScene *pRet = new(std::nothrow) RoadScene();
   if (pRet == nullptr) {
     return nullptr;
   }
@@ -40,7 +40,7 @@ Scene* HelloWorldScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void HelloWorldScene::doMoveCar() {
+void RoadScene::doMoveCar() {
   Vec2 newPos = expectedCarPos;
   newPos.y = newPos.y + kSingleMoveDistance;
 
@@ -60,7 +60,7 @@ void HelloWorldScene::doMoveCar() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void HelloWorldScene::doMoveCamera() {
+void RoadScene::doMoveCamera() {
   Camera* camera = getDefaultCamera();
   const Vec3 currentCameraPos = camera->getPosition3D();
 
@@ -69,21 +69,11 @@ void HelloWorldScene::doMoveCamera() {
 
   MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
   camera->runAction(cmt);
-
-  // const Size winSize = Director::getInstance()->getWinSize();
-  // const float posDiff = fabs(currentCameraPos.x - expectedCarPos.x);
-  // const float posTh = (winSize.width/2.0-150);
-  // printf("%s: camera status: %4.2f vs %4.2f\n", __func__, posDiff, posTh);
-  // if (posDiff>posTh) {
-  //   Vec3 newCameraPos = Vec3(expectedCarPos.x, expectedCarPos.y, currentCameraPos.z);
-  //   MoveTo* cmt = MoveTo::create(1, newCameraPos);
-  //   camera->runAction(cmt);
-  // }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool HelloWorldScene::init() {
+bool RoadScene::init() {
   if ( !Scene::init() ) {
     return false;
   }
@@ -105,7 +95,7 @@ bool HelloWorldScene::init() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool HelloWorldScene::initBackgroundRoad() {
+bool RoadScene::initBackgroundRoad() {
   const Size currentWindowSize = getContentSize();
   Sprite* sprite = Sprite::create("road_tile_a.png");
   if (sprite == nullptr) {
@@ -151,7 +141,7 @@ bool HelloWorldScene::initBackgroundRoad() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool HelloWorldScene::initCar() {
+bool RoadScene::initCar() {
   const Size currentWindowSize = getContentSize();
   car = Sprite::create("red_car.png");
   if (car == nullptr) {
@@ -170,10 +160,10 @@ bool HelloWorldScene::initCar() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool HelloWorldScene::initKeyboardProcessing() {
+bool RoadScene::initKeyboardProcessing() {
   // keyboard processing
   EventListenerKeyboard* sceneKeyboardListener = EventListenerKeyboard::create();
-  sceneKeyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorldScene::onKeyPressedScene, this);
+  sceneKeyboardListener->onKeyPressed = CC_CALLBACK_2(RoadScene::onKeyPressedScene, this);
   _eventDispatcher->addEventListenerWithSceneGraphPriority(sceneKeyboardListener, this);
 
   return true;
@@ -181,7 +171,7 @@ bool HelloWorldScene::initKeyboardProcessing() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void HelloWorldScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
+void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   C6_D3(c6, "Key '", (int)keyCode, "' was pressed");
 
   if (EventKeyboard::KeyCode::KEY_BACKSPACE == keyCode) {

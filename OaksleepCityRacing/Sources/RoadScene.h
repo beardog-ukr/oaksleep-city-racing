@@ -5,10 +5,8 @@
 
 namespace oaksleep_city_racing {
 
-class HelloWorldScene : public cocos2d::Scene,
-  virtual public SixCatsLoggerLoggable {
+class RoadScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
-//  static cocos2d::Scene* createScene();
   static cocos2d::Scene* createScene(std::shared_ptr<SixCatsLogger> c6);
 
 protected:
