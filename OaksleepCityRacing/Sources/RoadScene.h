@@ -5,6 +5,9 @@
 
 namespace oaksleep_city_racing {
 
+class PlayerCarNode;
+class StaticElementsKeeper;
+
 class RoadScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
   static cocos2d::Scene* createScene(std::shared_ptr<SixCatsLogger> c6);
@@ -13,19 +16,21 @@ protected:
   RoadScene();
   virtual ~RoadScene();
 
-  cocos2d::Sprite* car;
-  cocos2d::Vec2 expectedCarPos;
-
-  void doMoveCar();
-  void doMoveCamera();
-  void doMoveStaticScreen();
+  StaticElementsKeeper* staticElementsKeeper;
+  PlayerCarNode* playerCar;
 
   virtual bool init();
-  bool initRoad();
+  int initRoad();
   bool initTerrain();
-  bool initCar();
+  bool initPlayerCar(const int roadLength);
   bool initKeyboardProcessing();
+  bool initStaticElementsKeeper(const int roadLength);
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
+
+  bool alreadyMoving;
+  void startMoving();
+  void doSingleMove(float dt);// here parameter is not used, but is required by CC_SCHEDULE_SELECTOR
+  void reevaluateMove();
 
   static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
   static void unloadSpriteCache();

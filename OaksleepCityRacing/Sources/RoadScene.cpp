@@ -1,5 +1,8 @@
 #include "RoadScene.h"
 
+#include "PlayerCarNode.h"
+#include "StaticElementsKeeper.h"
+
 // Six Cats logger defines
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -21,17 +24,14 @@ enum ZOrderValues {
   kCarZOrder = 20
 };
 
-static const int kSingleMoveDistance = 400;
-static const float kSingleMoveInterval = 2.0;
-
 static const struct {
-  string redCar;
+  // string redCar;
   string road01;
   string road02;
   string road03;
   string terrain;
 } kSpriteFileNames = {
-  .redCar = "road_scene/red_car",
+  // .redCar = "road_scene/red_car",
   .road01 = "road_scene/road_tile_01",
   .road02 = "road_scene/road_tile_02",
   .road03 = "road_scene/road_tile_03",
@@ -43,12 +43,16 @@ static const string kPlistFileName = "road_scene.plist";
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::RoadScene() {
-  // nothing to do here
+  alreadyMoving = false;
+
+  staticElementsKeeper = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::~RoadScene() {
+  delete staticElementsKeeper;
+
   unloadSpriteCache();
 }
 
@@ -83,66 +87,75 @@ Scene* RoadScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void RoadScene::doMoveCar() {
-  Vec2 newPos = expectedCarPos;
-  newPos.y = newPos.y + kSingleMoveDistance;
+//void RoadScene::doSingleMove(float dt) {
+//  C6_D2(c6, "Here, ", dt);
 
-  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
-  expectedCarPos = newPos;
+//  const pair<float, float> moveInfo = playerCar->doMove();
+//  staticElementsKeeper->doMove(moveInfo);
 
-  CallFunc* cf = CallFunc::create([this]() {
-    C6_D1(c6,"calling car to continue ride\n");
+////  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), moveInfo.second, 0, 0);
+//}
 
-    doMoveCamera();
+//void RoadScene::doMoveCar() {
+//  Vec2 newPos = expectedCarPos;
+//  newPos.y = newPos.y + kSingleMoveDistance;
 
-    doMoveCar();
-  });
+//  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
+//  expectedCarPos = newPos;
 
-  car->runAction(Sequence::create(mt, cf, nullptr));
-}
+//  CallFunc* cf = CallFunc::create([this]() {
+//    C6_D1(c6,"calling car to continue ride\n");
 
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+//    doMoveCamera();
 
-void RoadScene::doMoveCamera() {
-  Camera* camera = getDefaultCamera();
-  const Vec3 currentCameraPos = camera->getPosition3D();
+//    doMoveCar();
+//  });
 
-  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
-                           currentCameraPos.z);
-
-  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
-  camera->runAction(cmt);
-}
+//  playerCar->runAction(Sequence::create(mt, cf, nullptr));
+//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void RoadScene::doMoveStaticScreen() {
-  Camera* camera = getDefaultCamera();
-  const Vec3 currentCameraPos = camera->getPosition3D();
+//void RoadScene::doMoveCamera() {
+//  Camera* camera = getDefaultCamera();
+//  const Vec3 currentCameraPos = camera->getPosition3D();
 
-  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
-                           currentCameraPos.z);
+//  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
+//                           currentCameraPos.z);
 
-  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
-  camera->runAction(cmt);
+//  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
+//  camera->runAction(cmt);
+//}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+//void RoadScene::doMoveStaticScreen() {
+//  Camera* camera = getDefaultCamera();
+//  const Vec3 currentCameraPos = camera->getPosition3D();
+
+//  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
+//                           currentCameraPos.z);
+
+//  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
+//  camera->runAction(cmt);
 
 
-  Vec2 newPos = expectedCarPos;
-  newPos.y = newPos.y + kSingleMoveDistance;
+//  Vec2 newPos = expectedCarPos;
+//  newPos.y = newPos.y + kSingleMoveDistance;
 
-  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
-  expectedCarPos = newPos;
+//  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
+//  expectedCarPos = newPos;
 
-  CallFunc* cf = CallFunc::create([this]() {
-    C6_D1(c6,"calling car to continue ride\n");
+//  CallFunc* cf = CallFunc::create([this]() {
+//    C6_D1(c6,"calling car to continue ride\n");
 
-    doMoveCamera();
+//    doMoveCamera();
 
-    doMoveCar();
-  });
+//    doMoveCar();
+//  });
 
-  car->runAction(Sequence::create(mt, cf, nullptr));
-}
+//  playerCar->runAction(Sequence::create(mt, cf, nullptr));
+//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -155,36 +168,22 @@ bool RoadScene::init() {
     return false;
   }
 
-  if (!initRoad()) {
+  const int roadLength = initRoad();
+  if (roadLength == 0) {
     return false;
   }
 
-  if (!initCar()) {
+  if (!initPlayerCar(roadLength)) {
+    return false;
+  }
+
+  if (!initStaticElementsKeeper(roadLength)) {
     return false;
   }
 
   if (!initKeyboardProcessing()) {
     return false;
   }
-
-  return true;
-}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-bool RoadScene::initCar() {
-  const Size currentWindowSize = getContentSize();
-  car = Sprite::createWithSpriteFrameName(kSpriteFileNames.redCar);
-  if (car == nullptr) {
-    C6_C1(c6, "Failed to open 'red_car.png'");
-    return false;
-  }
-
-  expectedCarPos = Vec2(currentWindowSize.width/2 + currentWindowSize.width/8, 100);
-  car->setPosition(expectedCarPos);
-
-
-  addChild(car, kCarZOrder);
 
   return true;
 }
@@ -202,12 +201,45 @@ bool RoadScene::initKeyboardProcessing() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initRoad() {
+bool RoadScene::initPlayerCar(const int roadLength) {
+  const Size currentWindowSize = getContentSize();
+  // car = Sprite::createWithSpriteFrameName(kSpriteFileNames.redCar);
+  // if (car == nullptr) {
+  //   C6_C1(c6, "Failed to open 'red_car.png'");
+  //   return false;
+  // }
+
+  // expectedCarPos = Vec2(currentWindowSize.width/2 + currentWindowSize.width/8, 100);
+  // car->setPosition(expectedCarPos);
+
+  // addChild(car, kCarZOrder);
+
+  playerCar = PlayerCarNode::create(c6);
+  if (playerCar == nullptr) {
+    return false;
+  }
+
+
+  Vec2 expectedCarPos = Vec2(currentWindowSize.width/2 + currentWindowSize.width/8, 100);
+  playerCar->setInitialPos(expectedCarPos);
+  playerCar->setRoadLength(roadLength);
+  addChild(playerCar, kCarZOrder);
+
+  // playerCar->setCamera(getDefaultCamera());
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+int RoadScene::initRoad() {
+  int roadLength = 0;
+
   const Size currentWindowSize = getContentSize();
   Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
   if (sprite == nullptr) {
     C6_C2(c6, "Failed to open ", kSpriteFileNames.road01);
-    return false;
+    return 0;
   }
 
   const Size spriteSize = sprite->getContentSize();
@@ -240,8 +272,22 @@ bool RoadScene::initRoad() {
     }
 
     yPos += (spriteSize.height -1);
+    roadLength += spriteSize.height;// later it will not depend on number of iterations
   }
 
+  return roadLength;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool RoadScene::initStaticElementsKeeper(const int roadLength) {
+  staticElementsKeeper = new(nothrow) StaticElementsKeeper;
+  if (staticElementsKeeper == nullptr) {
+    return false;
+  }
+
+  staticElementsKeeper->setLogger(c6);
+  staticElementsKeeper->setCamera(getDefaultCamera());
 
   return true;
 }
@@ -300,11 +346,33 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   C6_D3(c6, "Key '", (int)keyCode, "' was pressed");
 
   if (EventKeyboard::KeyCode::KEY_BACKSPACE == keyCode) {
-    C6_D1(c6, "That was KEY_BACKSPACE");
-    // Director::getInstance()->popScene();
+    C6_D1(c6, "That was KEY_BACKSPACE, it stops car");
+//    unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
+  }
+  else if (EventKeyboard::KeyCode::KEY_A == keyCode) {
+    if (alreadyMoving) {
+      if (playerCar->setGearUp()) {
+        reevaluateMove();
+      }
+    }
+    else {
+      startMoving();
+    }
+  }
+  else if (EventKeyboard::KeyCode::KEY_Z == keyCode) {
+    if (alreadyMoving) {
+      if (playerCar->setGearDown()) {
+        reevaluateMove();
+      }
+    }
+    else {
+      startMoving();
+    }
   }
   else if (EventKeyboard::KeyCode::KEY_K == keyCode) {
-    doMoveStaticScreen();
+    if (!alreadyMoving) {
+      startMoving();
+    }
   }
   else if (EventKeyboard::KeyCode::KEY_X == keyCode) {
     c6->d(__c6_MN__, "Need to get out.");
@@ -312,6 +380,28 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
     // Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
   }
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void RoadScene::reevaluateMove() {
+//  unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
+//  doSingleMove(0);
+//  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
+
+  const pair<float, float> moveInfo = playerCar->doMove();
+  staticElementsKeeper->doMove(moveInfo);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void RoadScene::startMoving() {
+  alreadyMoving = true;
+
+//  doSingleMove(0);
+//  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
+  const pair<float, float> moveInfo = playerCar->doMove();
+  staticElementsKeeper->doMove(moveInfo);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

@@ -32,11 +32,15 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
+     Sources/PlayerCarNode.cpp
      Sources/RoadScene.cpp
+     Sources/StaticElementsKeeper.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
+     Sources/PlayerCarNode.h
      Sources/RoadScene.h
+     Sources/StaticElementsKeeper.h
      )
 
 if(ANDROID)
