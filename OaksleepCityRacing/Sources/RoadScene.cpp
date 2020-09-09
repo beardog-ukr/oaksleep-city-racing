@@ -45,13 +45,13 @@ static const string kPlistFileName = "road_scene.plist";
 RoadScene::RoadScene() {
   alreadyMoving = false;
 
-  staticElementsKeeper = nullptr;
+//  staticElementsKeeper = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::~RoadScene() {
-  delete staticElementsKeeper;
+//  delete staticElementsKeeper;
 
   unloadSpriteCache();
 }
@@ -177,9 +177,9 @@ bool RoadScene::init() {
     return false;
   }
 
-  if (!initStaticElementsKeeper(roadLength)) {
-    return false;
-  }
+//  if (!initStaticElementsKeeper(roadLength)) {
+//    return false;
+//  }
 
   if (!initKeyboardProcessing()) {
     return false;
@@ -214,18 +214,26 @@ bool RoadScene::initPlayerCar(const int roadLength) {
 
   // addChild(car, kCarZOrder);
 
+  StaticElementsKeeper* staticElementsKeeper = new(nothrow) StaticElementsKeeper;
+  if (staticElementsKeeper == nullptr) {
+    return false;
+  }
+
+  staticElementsKeeper->setLogger(c6);
+  staticElementsKeeper->setCamera(getDefaultCamera());
+
   playerCar = PlayerCarNode::create(c6);
   if (playerCar == nullptr) {
     return false;
   }
 
-
-  Vec2 expectedCarPos = Vec2(currentWindowSize.width/2 + currentWindowSize.width/8, 100);
-  playerCar->setInitialPos(expectedCarPos);
+  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
+  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
+  playerCar->setLanes(leftLane, rightLane);
+  playerCar->setInitialY(100);
   playerCar->setRoadLength(roadLength);
+  playerCar->setStaticElementsKeeper(staticElementsKeeper);
   addChild(playerCar, kCarZOrder);
-
-  // playerCar->setCamera(getDefaultCamera());
 
   return true;
 }
@@ -280,17 +288,17 @@ int RoadScene::initRoad() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initStaticElementsKeeper(const int roadLength) {
-  staticElementsKeeper = new(nothrow) StaticElementsKeeper;
-  if (staticElementsKeeper == nullptr) {
-    return false;
-  }
+//bool RoadScene::initStaticElementsKeeper(const int roadLength) {
+//  staticElementsKeeper = new(nothrow) StaticElementsKeeper;
+//  if (staticElementsKeeper == nullptr) {
+//    return false;
+//  }
 
-  staticElementsKeeper->setLogger(c6);
-  staticElementsKeeper->setCamera(getDefaultCamera());
+//  staticElementsKeeper->setLogger(c6);
+//  staticElementsKeeper->setCamera(getDefaultCamera());
 
-  return true;
-}
+//  return true;
+//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -351,9 +359,10 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   }
   else if (EventKeyboard::KeyCode::KEY_A == keyCode) {
     if (alreadyMoving) {
-      if (playerCar->setGearUp()) {
-        reevaluateMove();
-      }
+//      if (playerCar->setGearUp()) {
+//        reevaluateMove();
+//      }
+      playerCar->setGearUp();
     }
     else {
       startMoving();
@@ -361,12 +370,31 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   }
   else if (EventKeyboard::KeyCode::KEY_Z == keyCode) {
     if (alreadyMoving) {
-      if (playerCar->setGearDown()) {
-        reevaluateMove();
-      }
+      playerCar->setGearDown();
+//      if (playerCar->setGearDown()) {
+//        reevaluateMove();
+//      }
     }
     else {
       startMoving();
+    }
+  }
+  else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keyCode) {
+    if (alreadyMoving) {
+      playerCar->makeTurnLeft();
+//      const pair<float, float> turnResult = playerCar->doTurnLeft();
+//      if (turnResult.first > 0) {
+//        staticElementsKeeper->doMove(turnResult);
+//      }
+    }
+  }
+  else if (EventKeyboard::KeyCode::KEY_RIGHT_ARROW == keyCode) {
+    if (alreadyMoving) {
+      playerCar->makeTurnRight();
+//      const pair<float, float> turnResult = playerCar->doTurnRight();
+//      if (turnResult.first > 0) {
+//        staticElementsKeeper->doMove(turnResult);
+//      }
     }
   }
   else if (EventKeyboard::KeyCode::KEY_K == keyCode) {
@@ -384,14 +412,14 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void RoadScene::reevaluateMove() {
-//  unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
-//  doSingleMove(0);
-//  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
+//void RoadScene::reevaluateMove() {
+////  unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
+////  doSingleMove(0);
+////  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
 
-  const pair<float, float> moveInfo = playerCar->doMove();
-  staticElementsKeeper->doMove(moveInfo);
-}
+//  const pair<float, float> moveInfo = playerCar->doMove();
+//  staticElementsKeeper->doMove(moveInfo);
+//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -401,7 +429,7 @@ void RoadScene::startMoving() {
 //  doSingleMove(0);
 //  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
   const pair<float, float> moveInfo = playerCar->doMove();
-  staticElementsKeeper->doMove(moveInfo);
+//  staticElementsKeeper->doMove(moveInfo);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

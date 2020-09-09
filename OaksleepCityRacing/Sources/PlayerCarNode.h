@@ -10,18 +10,26 @@
 
 namespace oaksleep_city_racing {
 
+class StaticElementsKeeper;
+
 class PlayerCarNode : public cocos2d::Sprite, virtual public SixCatsLoggerLoggable {
 public:
   static PlayerCarNode* create(std::shared_ptr<SixCatsLogger> c6);
 
-  void setInitialPos(const cocos2d::Vec2 carPos);
-  void setLines(const float leftLineX, const float rightLineX);
+  void setInitialY(const float value);
+  void setLanes(const float leftLaneX, const float rightLaneX);
   void setRoadLength(const int roadLength);
+  void setStaticElementsKeeper(StaticElementsKeeper* keeper);
 
   std::pair<float, float> doMove();
 
   bool setGearDown();// returns true if gear actually changed
   bool setGearUp();
+
+//  std::pair<float, float>  doTurnRight();
+//  std::pair<float, float>  doTurnLeft();
+  bool makeTurnLeft();
+  bool makeTurnRight();
 
   // void setGamePosition(const int gameX, const int gameY);
   // void doAttackTo(const int gameX, const int gameY);
@@ -37,15 +45,20 @@ protected:
 
   bool initSelf();
 
-  int currentLineIndex;
-  float linePositions[3];
+  int currentLaneIndex;
+  float lanes[3];// line positions start from right lane
+  void doChangeLane();
 
   int currentGear;
 
   int roadLength;
 
-  cocos2d::Camera* camera;
-  float cameraCarPosDifference;
+  float initialY;
+
+  StaticElementsKeeper* staticElementsKeeper;
+
+//  cocos2d::Camera* camera;
+//  float cameraCarPosDifference;
 
 //  void doMoveSelf();//const float newX, const float newY);
 //  void doMoveStaticElements(const int moveDistance);

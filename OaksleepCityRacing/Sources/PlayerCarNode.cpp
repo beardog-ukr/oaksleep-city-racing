@@ -1,5 +1,6 @@
 #include "PlayerCarNode.h"
 using namespace oaksleep_city_racing;
+#include "StaticElementsKeeper.h"
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -9,11 +10,13 @@ USING_NS_CC;
 using namespace std;
 
 static const int kGearMax = 4;
+static const int kLineMax = 2;
 
 static const int kMoveActionTag = 222;
 
 static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
+static const int kTurnDistance = 200;
 
 static const string kRedCarFrameName = "road_scene/red_car";
 
@@ -33,11 +36,17 @@ static const string kRedCarFrameName = "road_scene/red_car";
 
 PlayerCarNode::PlayerCarNode() {
   currentGear = 1;
+  currentLaneIndex = -1;// -1 indicates value was not initialized
+  initialY = -1;
+
+  staticElementsKeeper = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 PlayerCarNode::~PlayerCarNode() {
+  delete staticElementsKeeper;
+
   C6_F1(c6, "here");
 }
 
@@ -60,6 +69,38 @@ PlayerCarNode* PlayerCarNode::create(shared_ptr<SixCatsLogger> c6) {
 
   pRet->autorelease();
   return pRet;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void PlayerCarNode::doChangeLane() {
+  Vec2 currentPos = getPosition();
+//    float path = roadLength - currentPos.y;
+  float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
+  float time = kTurnDistance / velocity;
+  C6_D4(c6, "Here path = ", kTurnDistance, " time = ", time);
+
+  Vec2 newPos;
+  newPos.x = lanes[currentLaneIndex];
+  newPos.y = currentPos.y + kTurnDistance;
+
+  MoveTo* mt = MoveTo::create(time, newPos);
+
+  CallFunc* cf = CallFunc::create([this]() {
+//    const pair<float, float>  moveResult =
+    doMove();
+//    staticElementsKeeper->doMove(moveResult);
+  });
+
+  Sequence* seq = Sequence::create(mt, cf, nullptr);
+  seq->setTag(kMoveActionTag);
+
+  // --- reset camera movement
+  const pair<float, float> moveParameters = make_pair(kTurnDistance, time);
+  staticElementsKeeper->doMove(moveParameters);
+
+  stopAllActionsByTag(kMoveActionTag);     // just in case
+  runAction(seq);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -94,7 +135,7 @@ std::pair<float, float> PlayerCarNode::doMove() {
   C6_D4(c6, "Here path = ", path, " time = ", time);
 
   Vec2 newPos;
-  newPos.x = currentPos.x;
+  newPos.x = lanes[currentLaneIndex];
   newPos.y = currentPos.y + path;
 
   MoveTo* mt = MoveTo::create(time, newPos);
@@ -106,7 +147,8 @@ std::pair<float, float> PlayerCarNode::doMove() {
   result.first = path;
   result.second = time;
 
-
+  // --- reset camera movement
+  staticElementsKeeper->doMove(result);
 
   return result;
 }
@@ -124,12 +166,40 @@ bool PlayerCarNode::initSelf() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+bool PlayerCarNode::makeTurnLeft() {
+  if (currentLaneIndex == (kLineMax-1)) {
+    return false;
+  }
+  //else
+  currentLaneIndex++;
+  doChangeLane();
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool PlayerCarNode::makeTurnRight() {
+  if (currentLaneIndex == 0) {
+    return false;
+  }
+  //else
+  currentLaneIndex--;
+  doChangeLane();
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 bool PlayerCarNode::setGearDown() {
   if (currentGear == 1) {
     return false;
   }
 
   currentGear = currentGear -1;
+  doMove();
+
   return true;
 }
 
@@ -142,23 +212,31 @@ bool PlayerCarNode::setGearUp() {
 
   currentGear = currentGear +1;
 
+  doMove();
+
   return true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void PlayerCarNode::setInitialPos(const cocos2d::Vec2 carPos) {
-//  expectedCarPos = carPos;
+void PlayerCarNode::setInitialY(const float value) {
+  initialY = value;
 
-  setPosition(carPos);
+  if (currentLaneIndex>=0) {
+    setPosition(Vec2(lanes[currentLaneIndex], initialY));
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void PlayerCarNode::setLines(const float leftLineX, const float rightLineX) {
-  currentLineIndex = 1;
-  linePositions[0] = leftLineX;
-  linePositions[1] = rightLineX;
+void PlayerCarNode::setLanes(const float leftLaneX, const float rightLaneX) {
+  currentLaneIndex = 1;
+  lanes[0] = rightLaneX;
+  lanes[1] = leftLaneX;
+
+  if (initialY>=0) {
+    setPosition(Vec2(lanes[currentLaneIndex], initialY));
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -166,6 +244,13 @@ void PlayerCarNode::setLines(const float leftLineX, const float rightLineX) {
 void PlayerCarNode::setRoadLength(const int inRoadLength) {
   roadLength = inRoadLength;
 }
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void PlayerCarNode::setStaticElementsKeeper(StaticElementsKeeper* keeper) {
+  staticElementsKeeper = keeper;
+}
+
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
