@@ -1,5 +1,6 @@
 #include "RoadScene.h"
 
+#include "EnemyCarNode.h"
 #include "PlayerCarNode.h"
 #include "StaticElementsKeeper.h"
 
@@ -38,21 +39,20 @@ static const struct {
   .terrain = "road_scene/soil_tile"
 };
 
+static const int kElementsOpacity =  50; //must be 255 in release mode; this value is used
+                                         //during physics world deburring
+
 static const string kPlistFileName = "road_scene.plist";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::RoadScene() {
   alreadyMoving = false;
-
-//  staticElementsKeeper = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::~RoadScene() {
-//  delete staticElementsKeeper;
-
   unloadSpriteCache();
 }
 
@@ -87,82 +87,18 @@ Scene* RoadScene::createScene(std::shared_ptr<SixCatsLogger> inC6) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-//void RoadScene::doSingleMove(float dt) {
-//  C6_D2(c6, "Here, ", dt);
-
-//  const pair<float, float> moveInfo = playerCar->doMove();
-//  staticElementsKeeper->doMove(moveInfo);
-
-////  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), moveInfo.second, 0, 0);
-//}
-
-//void RoadScene::doMoveCar() {
-//  Vec2 newPos = expectedCarPos;
-//  newPos.y = newPos.y + kSingleMoveDistance;
-
-//  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
-//  expectedCarPos = newPos;
-
-//  CallFunc* cf = CallFunc::create([this]() {
-//    C6_D1(c6,"calling car to continue ride\n");
-
-//    doMoveCamera();
-
-//    doMoveCar();
-//  });
-
-//  playerCar->runAction(Sequence::create(mt, cf, nullptr));
-//}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-//void RoadScene::doMoveCamera() {
-//  Camera* camera = getDefaultCamera();
-//  const Vec3 currentCameraPos = camera->getPosition3D();
-
-//  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
-//                           currentCameraPos.z);
-
-//  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
-//  camera->runAction(cmt);
-//}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-//void RoadScene::doMoveStaticScreen() {
-//  Camera* camera = getDefaultCamera();
-//  const Vec3 currentCameraPos = camera->getPosition3D();
-
-//  Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + kSingleMoveDistance,
-//                           currentCameraPos.z);
-
-//  MoveTo* cmt = MoveTo::create(kSingleMoveInterval, newCameraPos);
-//  camera->runAction(cmt);
-
-
-//  Vec2 newPos = expectedCarPos;
-//  newPos.y = newPos.y + kSingleMoveDistance;
-
-//  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
-//  expectedCarPos = newPos;
-
-//  CallFunc* cf = CallFunc::create([this]() {
-//    C6_D1(c6,"calling car to continue ride\n");
-
-//    doMoveCamera();
-
-//    doMoveCar();
-//  });
-
-//  playerCar->runAction(Sequence::create(mt, cf, nullptr));
-//}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 bool RoadScene::init() {
-  if ( !Scene::init() ) {
+  if ( !Scene::initWithPhysics() ) {
     return false;
   }
+
+  PhysicsWorld* phw = getPhysicsWorld();
+  if (phw == nullptr) {
+    C6_D1(c6, "Failed to get ph world");
+    return false;
+  }
+  //else
+  phw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
   if (!initTerrain()) {
     return false;
@@ -173,18 +109,59 @@ bool RoadScene::init() {
     return false;
   }
 
-  if (!initPlayerCar(roadLength)) {
+  if (!initEnemyCars(roadLength)) {
     return false;
   }
 
-//  if (!initStaticElementsKeeper(roadLength)) {
-//    return false;
-//  }
+  if (!initPlayerCar(roadLength)) {
+    return false;
+  }
 
   if (!initKeyboardProcessing()) {
     return false;
   }
 
+  EventListenerPhysicsContact* contactListener = EventListenerPhysicsContact::create();
+  contactListener->onContactBegin = CC_CALLBACK_1(RoadScene::onContactBegin, this);
+  _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool RoadScene::initEnemyCars(const int roadLength) {
+  const Size currentWindowSize = getContentSize();
+
+  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
+  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
+
+  EnemyCarNode* enemyCar = EnemyCarNode::create(c6);
+  if (enemyCar == nullptr) {
+    return false;
+  }
+
+  enemyCar->setLanes(leftLane, rightLane);
+  enemyCar->setInitialPos(0,100);
+  enemyCar->setRoadLength(roadLength);
+//  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
+  addChild(enemyCar, kCarZOrder);
+
+  enemyCar->doMove();
+
+  enemyCar = EnemyCarNode::create(c6);
+  if (enemyCar == nullptr) {
+    return false;
+  }
+
+  enemyCar->setLanes(leftLane, rightLane);
+  enemyCar->setInitialPos(1,1000);
+  enemyCar->setRoadLength(roadLength);
+//  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
+  addChild(enemyCar, kCarZOrder);
+
+//  enemyCar->doMove();
   return true;
 }
 
@@ -258,7 +235,7 @@ int RoadScene::initRoad() {
     Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
 
     tsp->setPosition(Vec2(xPos, yPos));
-
+    tsp->setOpacity(kElementsOpacity);
 
     addChild(tsp, kRoadTileZOrder);
 
@@ -317,16 +294,17 @@ bool RoadScene::initTerrain() {
   for (int i = 0; i<100; i++) {
     Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
     tsp->setPosition(Vec2(0, yPos));
+    tsp->setOpacity(kElementsOpacity);
     addChild(tsp, kTerrainTileZOrder);
 
     tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
     tsp->setPosition(Vec2(xPos, yPos));
+    tsp->setOpacity(kElementsOpacity);
     addChild(tsp, kTerrainTileZOrder);
 
 
     yPos += (spriteSize.height -1);
   }
-
 
   return true;
 }
@@ -344,6 +322,14 @@ bool RoadScene::loadSpriteCache(std::shared_ptr<SixCatsLogger> c6) {
 
   // AnimationCache * const ac = AnimationCache::getInstance();
   // ac->addAnimationsWithFile(kAnimationsPlistFileName);
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool RoadScene::onContactBegin(PhysicsContact& contact) {
+  C6_D1(c6, "contact");
 
   return true;
 }

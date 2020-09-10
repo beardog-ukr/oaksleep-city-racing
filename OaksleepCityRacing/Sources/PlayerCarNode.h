@@ -44,6 +44,7 @@ protected:
   virtual ~PlayerCarNode();
 
   bool initSelf();
+  bool initPhysicsBody();
 
   int currentLaneIndex;
   float lanes[3];// line positions start from right lane

@@ -20,6 +20,25 @@ static const int kTurnDistance = 200;
 
 static const string kRedCarFrameName = "road_scene/red_car";
 
+static const int kRedCarBodyPointsCount = 12;
+static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
+  {.x =       14, .y =          -78     },
+  {.x =       -14, .y =          -78     },
+  {.x =       30, .y =          -67     },
+  {.x =       -29, .y =          -67     },
+  {.x =       32, .y =          -43     },
+  {.x =       -32, .y =          -43     },
+  {.x =       36, .y =          51      },
+  {.x =       -36, .y =          51      },
+  {.x =       28, .y =          69      },
+  {.x =       -29, .y =          69      },
+  {.x =       18, .y =          77      },
+  {.x =       -16, .y =          77      },
+};
+
+static const int kPlayerCarCategoryBitmask = 0x01;
+static const int kEnemyCarCategoryBitmask = 0x02;
+
 // static const struct {
 //   string north;
 //   string south;
@@ -155,10 +174,38 @@ std::pair<float, float> PlayerCarNode::doMove() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+bool PlayerCarNode::initPhysicsBody() {
+
+  PhysicsBody* physicsBody = PhysicsBody::createPolygon(redCarBodyPoints, kRedCarBodyPointsCount,
+                                                        PhysicsMaterial(0.1f, 1.0f, 0.0f));
+  if (physicsBody == nullptr) {
+    C6_D1(c6, "Failed to create ph body");
+    return false;
+  }
+
+  physicsBody->setDynamic(false);
+  physicsBody->setCategoryBitmask(kPlayerCarCategoryBitmask);
+  physicsBody->setCollisionBitmask(kEnemyCarCategoryBitmask);
+  physicsBody->setContactTestBitmask(0xFFFFFFFF);
+
+  addComponent(physicsBody);
+
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 bool PlayerCarNode::initSelf() {
   if (!initWithSpriteFrameName(kRedCarFrameName)) {
     C6_C2(c6, "Failed to init with file ", kRedCarFrameName);
     return false;    //
+  }
+
+  setOpacity(50);
+
+  if (!initPhysicsBody()) {
+    return false;
   }
 
   return true;
