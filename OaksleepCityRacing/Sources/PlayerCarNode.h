@@ -28,8 +28,11 @@ public:
 
 //  std::pair<float, float>  doTurnRight();
 //  std::pair<float, float>  doTurnLeft();
+  bool isTurning();
   bool makeTurnLeft();
   bool makeTurnRight();
+
+  void reactToEnemyContact();
 
   // void setGamePosition(const int gameX, const int gameY);
   // void doAttackTo(const int gameX, const int gameY);
@@ -38,6 +41,8 @@ public:
   // int getValue() const;
 
   // static void unloadAnimations();
+
+  static const int kTag;
 
 protected:
   PlayerCarNode();
@@ -49,12 +54,15 @@ protected:
   int currentLaneIndex;
   float lanes[3];// line positions start from right lane
   void doChangeLane();
+  bool laneChangeInProgress;
 
   int currentGear;
 
   int roadLength;
 
   float initialY;
+
+
 
   StaticElementsKeeper* staticElementsKeeper;
 

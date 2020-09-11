@@ -4,6 +4,9 @@
 #include "PlayerCarNode.h"
 #include "StaticElementsKeeper.h"
 
+#include "ZOrderConstTypes.h"
+#include "ZOrderConstValues.h"
+
 // Six Cats logger defines
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -17,13 +20,13 @@ USING_NS_CC;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-enum ZOrderValues {
-  kTerrainTileZOrder = 10,
-  kRoadTileZOrder = 11,
-  kRoadTileLabelZOrder = 12,
+//enum ZOrderValues {
+//  kTerrainTileZOrder = 10,
+//  kRoadTileZOrder = 11,
+//  kRoadTileLabelZOrder = 12,
 
-  kCarZOrder = 20
-};
+//  kCarZOrder = 20
+//};
 
 static const struct {
   // string redCar;
@@ -32,14 +35,13 @@ static const struct {
   string road03;
   string terrain;
 } kSpriteFileNames = {
-  // .redCar = "road_scene/red_car",
-  .road01 = "road_scene/road_tile_01",
-  .road02 = "road_scene/road_tile_02",
-  .road03 = "road_scene/road_tile_03",
-  .terrain = "road_scene/soil_tile"
+  .road01 = "ocr_game/terrain/road_tile_01",
+  .road02 = "ocr_game/terrain/road_tile_02",
+  .road03 = "ocr_game/terrain/road_tile_03",
+  .terrain = "ocr_game/terrain/soil_tile"
 };
 
-static const int kElementsOpacity =  50; //must be 255 in release mode; this value is used
+static const int kElementsOpacity = 255; //must be 255 in release mode; this value is used
                                          //during physics world deburring
 
 static const string kPlistFileName = "road_scene.plist";
@@ -146,7 +148,7 @@ bool RoadScene::initEnemyCars(const int roadLength) {
   enemyCar->setInitialPos(0,100);
   enemyCar->setRoadLength(roadLength);
 //  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
-  addChild(enemyCar, kCarZOrder);
+  addChild(enemyCar, kRoadSceneZO.enemyCar);
 
   enemyCar->doMove();
 
@@ -159,7 +161,7 @@ bool RoadScene::initEnemyCars(const int roadLength) {
   enemyCar->setInitialPos(1,1000);
   enemyCar->setRoadLength(roadLength);
 //  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
-  addChild(enemyCar, kCarZOrder);
+  addChild(enemyCar, kRoadSceneZO.enemyCar);
 
 //  enemyCar->doMove();
   return true;
@@ -179,38 +181,24 @@ bool RoadScene::initKeyboardProcessing() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool RoadScene::initPlayerCar(const int roadLength) {
-  const Size currentWindowSize = getContentSize();
-  // car = Sprite::createWithSpriteFrameName(kSpriteFileNames.redCar);
-  // if (car == nullptr) {
-  //   C6_C1(c6, "Failed to open 'red_car.png'");
-  //   return false;
-  // }
-
-  // expectedCarPos = Vec2(currentWindowSize.width/2 + currentWindowSize.width/8, 100);
-  // car->setPosition(expectedCarPos);
-
-  // addChild(car, kCarZOrder);
-
-  StaticElementsKeeper* staticElementsKeeper = new(nothrow) StaticElementsKeeper;
+  StaticElementsKeeper* staticElementsKeeper = StaticElementsKeeper::create(this, c6);
   if (staticElementsKeeper == nullptr) {
     return false;
   }
-
-  staticElementsKeeper->setLogger(c6);
-  staticElementsKeeper->setCamera(getDefaultCamera());
 
   playerCar = PlayerCarNode::create(c6);
   if (playerCar == nullptr) {
     return false;
   }
 
+  const Size currentWindowSize = getContentSize();
   const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
   const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
   playerCar->setLanes(leftLane, rightLane);
   playerCar->setInitialY(100);
   playerCar->setRoadLength(roadLength);
   playerCar->setStaticElementsKeeper(staticElementsKeeper);
-  addChild(playerCar, kCarZOrder);
+  addChild(playerCar, kRoadSceneZO.playerCar);
 
   return true;
 }
@@ -237,7 +225,7 @@ int RoadScene::initRoad() {
     tsp->setPosition(Vec2(xPos, yPos));
     tsp->setOpacity(kElementsOpacity);
 
-    addChild(tsp, kRoadTileZOrder);
+    addChild(tsp, kRoadSceneZO.road);
 
     if ((i%10==0)) {
       std::ostringstream oss;
@@ -252,7 +240,7 @@ int RoadScene::initRoad() {
         label->setPosition(Vec2(currentWindowSize.width/2 - currentWindowSize.width/8, yPos));
 
         // add the label as a child to this layer
-        this->addChild(label, kRoadTileLabelZOrder);
+        this->addChild(label, kRoadSceneZO.roadLabel);
       }
     }
 
@@ -262,20 +250,6 @@ int RoadScene::initRoad() {
 
   return roadLength;
 }
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-//bool RoadScene::initStaticElementsKeeper(const int roadLength) {
-//  staticElementsKeeper = new(nothrow) StaticElementsKeeper;
-//  if (staticElementsKeeper == nullptr) {
-//    return false;
-//  }
-
-//  staticElementsKeeper->setLogger(c6);
-//  staticElementsKeeper->setCamera(getDefaultCamera());
-
-//  return true;
-//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -295,13 +269,12 @@ bool RoadScene::initTerrain() {
     Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
     tsp->setPosition(Vec2(0, yPos));
     tsp->setOpacity(kElementsOpacity);
-    addChild(tsp, kTerrainTileZOrder);
+    addChild(tsp, kRoadSceneZO.terrain);
 
     tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
     tsp->setPosition(Vec2(xPos, yPos));
     tsp->setOpacity(kElementsOpacity);
-    addChild(tsp, kTerrainTileZOrder);
-
+    addChild(tsp, kRoadSceneZO.terrain);
 
     yPos += (spriteSize.height -1);
   }
@@ -330,6 +303,30 @@ bool RoadScene::loadSpriteCache(std::shared_ptr<SixCatsLogger> c6) {
 
 bool RoadScene::onContactBegin(PhysicsContact& contact) {
   C6_D1(c6, "contact");
+
+  Node* nodeA = contact.getShapeA()->getBody()->getNode();
+  Node* nodeB = contact.getShapeB()->getBody()->getNode();
+  if((nodeA == nullptr)||(nodeB ==nullptr)) {
+    C6_I1(c6, "Bad node");
+    return true;
+  }
+
+  EnemyCarNode* ecn = nullptr;
+  if (nodeA->getTag() == PlayerCarNode::kTag) {
+    ecn = dynamic_cast<EnemyCarNode*>(nodeB);
+  }
+  else {
+    ecn = dynamic_cast<EnemyCarNode*>(nodeA);
+  }
+
+  if (ecn == nullptr) {
+    C6_D1(c6, "Failed to get enemy in contact");
+    return true;
+  }
+
+  ecn->reactToBackAttack();
+
+  playerCar->reactToEnemyContact();
 
   return true;
 }
@@ -395,17 +392,6 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
     Director::getInstance()->end();
   }
 }
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-//void RoadScene::reevaluateMove() {
-////  unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
-////  doSingleMove(0);
-////  schedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove), 2.0, CC_REPEAT_FOREVER, 0);
-
-//  const pair<float, float> moveInfo = playerCar->doMove();
-//  staticElementsKeeper->doMove(moveInfo);
-//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 

@@ -18,44 +18,37 @@ static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
 static const int kTurnDistance = 200;
 
-static const string kRedCarFrameName = "road_scene/red_car";
+static const string kRedCarFrameName = "ocr_game/cars/red_car_5";
 
 static const int kRedCarBodyPointsCount = 12;
 static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
-  {.x =       14, .y =          -78     },
-  {.x =       -14, .y =          -78     },
-  {.x =       30, .y =          -67     },
-  {.x =       -29, .y =          -67     },
-  {.x =       32, .y =          -43     },
-  {.x =       -32, .y =          -43     },
-  {.x =       36, .y =          51      },
-  {.x =       -36, .y =          51      },
-  {.x =       28, .y =          69      },
-  {.x =       -29, .y =          69      },
-  {.x =       18, .y =          77      },
-  {.x =       -16, .y =          77      },
+  {.x =  14, .y = -78     },
+  {.x = -14, .y = -78     },
+  {.x =  30, .y = -67     },
+  {.x = -29, .y = -67     },
+  {.x =  32, .y =          -43     },
+  {.x = -32, .y =          -43     },
+  {.x =  36, .y =          51      },
+  {.x = -36, .y =          51      },
+  {.x =  28, .y =          69      },
+  {.x = -29, .y =          69      },
+  {.x =  18, .y =          77      },
+  {.x = -16, .y =          77      },
 };
 
 static const int kPlayerCarCategoryBitmask = 0x01;
 static const int kEnemyCarCategoryBitmask = 0x02;
 
-// static const struct {
-//   string north;
-//   string south;
-//   string east;
-//   string west;
-// } kMoveAnimationNames = {
-//   .north = "actor_move_north",
-//   .south = "actor_move_south",
-//   .east = "actor_move_east",
-//   .west = "actor_move_west"
-// };
+const int PlayerCarNode::kTag = 20;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 PlayerCarNode::PlayerCarNode() {
   currentGear = 1;
+
   currentLaneIndex = -1;// -1 indicates value was not initialized
+  laneChangeInProgress = false;
+
   initialY = -1;
 
   staticElementsKeeper = nullptr;
@@ -106,9 +99,8 @@ void PlayerCarNode::doChangeLane() {
   MoveTo* mt = MoveTo::create(time, newPos);
 
   CallFunc* cf = CallFunc::create([this]() {
-//    const pair<float, float>  moveResult =
+    this->laneChangeInProgress = false;
     doMove();
-//    staticElementsKeeper->doMove(moveResult);
   });
 
   Sequence* seq = Sequence::create(mt, cf, nullptr);
@@ -118,6 +110,7 @@ void PlayerCarNode::doChangeLane() {
   const pair<float, float> moveParameters = make_pair(kTurnDistance, time);
   staticElementsKeeper->doMove(moveParameters);
 
+  laneChangeInProgress = true;
   stopAllActionsByTag(kMoveActionTag);     // just in case
   runAction(seq);
 }
@@ -190,7 +183,6 @@ bool PlayerCarNode::initPhysicsBody() {
 
   addComponent(physicsBody);
 
-
   return true;
 }
 
@@ -202,13 +194,20 @@ bool PlayerCarNode::initSelf() {
     return false;    //
   }
 
-  setOpacity(50);
+//  setOpacity(50);
+  setTag(kTag);
 
   if (!initPhysicsBody()) {
     return false;
   }
 
   return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool PlayerCarNode::isTurning() {
+  return laneChangeInProgress;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -235,6 +234,18 @@ bool PlayerCarNode::makeTurnRight() {
   doChangeLane();
 
   return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void PlayerCarNode::reactToEnemyContact() {
+  if (laneChangeInProgress) {
+    C6_D1(c6, "Conflict ignored because of lanes changing in process");
+    return;
+  }
+
+  currentGear = 1;
+  doMove();
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

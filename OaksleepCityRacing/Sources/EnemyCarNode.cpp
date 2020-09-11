@@ -18,7 +18,7 @@ static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
 static const int kTurnDistance = 200;
 
-static const string kYellowCarFrameName = "road_scene/yellow_car";
+static const string kYellowCarFrameName = "ocr_game/cars/yellow_car";
 
 static const int kYellowCarBodyPointsCount = 8;
 static const Vec2 yellowCarBodyPoints[kYellowCarBodyPointsCount] = {
@@ -156,6 +156,44 @@ bool EnemyCarNode::initSelf() {
   }
 
   return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void EnemyCarNode::reactToBackAttack() {
+  PhysicsBody* physicsBody = getPhysicsBody();
+  if (physicsBody != nullptr) {
+    physicsBody->setContactTestBitmask(0x00);// disable further contacts for this car
+  }
+
+  float laneDiff = lanes[0] - lanes[1];
+  C6_D2(c6, "Lane difference is ", laneDiff);
+
+  float outLane = 0;
+  if (currentLaneIndex == 0) {
+    outLane = lanes[0] + laneDiff;
+  }
+  else {
+    outLane = lanes[1] - laneDiff;
+  }
+
+  C6_D2(c6, "Out position is ", outLane);
+
+
+  Vec2 currentPos = getPosition();
+  float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
+  float time = kTurnDistance / velocity;
+  C6_D4(c6, "Here path = ", kTurnDistance, " time = ", time);
+
+  Vec2 newPos;
+  newPos.x = outLane;
+  newPos.y = currentPos.y + kTurnDistance;
+
+  MoveTo* mt = MoveTo::create(time, newPos);
+  mt->setTag(kMoveActionTag);
+
+  stopAllActionsByTag(kMoveActionTag);     // just in case
+  runAction(mt);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

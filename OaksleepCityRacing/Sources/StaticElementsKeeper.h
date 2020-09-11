@@ -8,17 +8,33 @@ namespace oaksleep_city_racing {
 
 class StaticElementsKeeper : virtual public SixCatsLoggerLoggable {
 public:
-  StaticElementsKeeper();
   virtual ~StaticElementsKeeper();
-  // static StaticElementsKeeper* create(std::shared_ptr<SixCatsLogger> c6);
 
-//  void setRoadLength(const int roadLength);
-  void setCamera(cocos2d::Camera* camera);
+  //note this class in not in cocos memory management system, but here is similar create function
+  //result is not autoreleased !!!
+  static StaticElementsKeeper* create(cocos2d::Scene* roadScene,
+                                      std::shared_ptr<SixCatsLogger> c6);
+
+  void setLifesCounter(const int value);
+
+//  void setCamera(cocos2d::Camera* camera);
   void doMove(const std::pair<float, float> moveInfo);
   //const float moveDistance, const float timeInteval);
 
 protected:
-//  int roadLength;
+  StaticElementsKeeper();
+//  virtual ~StaticElementsKeeper();
+
+  bool initSelf(cocos2d::Scene* roadScene);
+  bool initLifesWidget(cocos2d::Scene* roadScene);
+
+  void doMoveCamera(const float moveDistance, const float timeInterval);
+  void doMoveLifeIndicator(const float moveDistance, const float timeInterval);
+
+  int lifesCounter;
+  cocos2d::Sprite* lifesSprite;
+  cocos2d::Label* lifesLabel;
+
   cocos2d::Camera* camera;
 };
 

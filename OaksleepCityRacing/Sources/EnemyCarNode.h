@@ -18,6 +18,7 @@ public:
   void setLanes(const float leftLaneX, const float rightLaneX);
   void setRoadLength(const int roadLength);
 
+  void reactToBackAttack();
 
   std::pair<float, float> doMove();
 

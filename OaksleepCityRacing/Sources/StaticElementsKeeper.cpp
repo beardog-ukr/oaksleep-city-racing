@@ -1,5 +1,7 @@
 #include "StaticElementsKeeper.h"
 using namespace oaksleep_city_racing;
+#include "ZOrderConstTypes.h"
+#include "ZOrderConstValues.h"
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -9,11 +11,16 @@ USING_NS_CC;
 using namespace std;
 
 static const int kMoveActionTag = 22;
+static const string kLifesSpriteFrameName = "ocr_game/ui_road/hp_full";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 StaticElementsKeeper::StaticElementsKeeper() {
   camera = nullptr;
+
+  lifesCounter = 5;
+  lifesLabel = nullptr;
+  lifesSprite = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -24,102 +31,97 @@ StaticElementsKeeper::~StaticElementsKeeper() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void StaticElementsKeeper::doMove(const std::pair<float, float> moveInfo) {
-  camera->stopAllActionsByTag(kMoveActionTag);
+StaticElementsKeeper* StaticElementsKeeper::create(Scene* roadScene, shared_ptr<SixCatsLogger> c6) {
 
+  StaticElementsKeeper *pRet = new(std::nothrow) StaticElementsKeeper();
+  if (pRet ==nullptr) {
+    return nullptr;
+  }
+
+  pRet->setLogger(c6);
+
+  if (!pRet->initSelf(roadScene)) {
+    delete pRet;
+    pRet = nullptr;
+    return nullptr;
+  }
+
+//  pRet->autorelease();
+  return pRet;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool StaticElementsKeeper::initLifesWidget(Scene* roadScene) {
+  lifesSprite = Sprite::createWithSpriteFrameName(kLifesSpriteFrameName);
+  if (lifesSprite == nullptr) {
+    C6_W2(c6, "Failed to open ", kLifesSpriteFrameName);
+    return false;
+  }
+
+  const Size rscs = roadScene->getContentSize();
+  lifesSprite->setAnchorPoint(Vec2(0,1));
+  lifesSprite->setPosition(0,rscs.height);
+
+  roadScene->addChild(lifesSprite, kRoadSceneZO.lifesIndicator);
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool StaticElementsKeeper::initSelf(cocos2d::Scene* roadScene) {
+  if (roadScene == nullptr) {
+    return false;
+  }
+
+  camera = roadScene->getDefaultCamera();
+  if (camera == nullptr) {
+    return false;
+  }
+
+  if (!initLifesWidget(roadScene)) {
+    return false;
+  }
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void StaticElementsKeeper::doMove(const std::pair<float, float> moveInfo) {
   const float moveDistance = moveInfo.first;
-  const float timeInteval = moveInfo.second;
+  const float timeInterval = moveInfo.second;
+
+  doMoveCamera(moveDistance, timeInterval);
+  doMoveLifeIndicator(moveDistance, timeInterval);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void StaticElementsKeeper::doMoveCamera(const float moveDistance, const float timeInterval) {
+  camera->stopAllActionsByTag(kMoveActionTag);
 
   const Vec3 currentCameraPos = camera->getPosition3D();
   Vec3 newCameraPos = Vec3(currentCameraPos.x, currentCameraPos.y + moveDistance,
                            currentCameraPos.z);
 
-  CallFunc* cf = CallFunc::create([this, moveInfo]() {
-    doMove(moveInfo);
-  });
-
-
-  MoveTo* cmt = MoveTo::create(timeInteval, newCameraPos);
-//  cmt->setTag(kMoveActionTag);
-  Sequence* seq =  Sequence::create(cmt, cf, nullptr);
-  seq->setTag(kMoveActionTag);
-  camera->runAction(seq);
+  MoveTo* cmt = MoveTo::create(timeInterval, newCameraPos);
+  cmt->setTag(kMoveActionTag);
+  camera->runAction(cmt);
 }
 
-
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-// void ActorNode::doChangePositionTo(const int newGameX, const int newGameY) {
-//   C6_D1(c6, "here");
+void StaticElementsKeeper::doMoveLifeIndicator(const float moveDistance, const float timeInterval) {
+  lifesSprite->stopAllActionsByTag(kMoveActionTag);
 
-//   Vec2 newPosition = calculatePosition(newGameX, newGameY);
+  const Vec2 currentPos = lifesSprite->getPosition();
+  Vec2 newPos = Vec2(currentPos.x, currentPos.y + moveDistance);
 
-//   string an;
-//   if (newGameX == gameX) {
-//     if (newGameY > gameY) {
-//       an = kMoveAnimationNames.north;
-//     }
-//     else {
-//       an = kMoveAnimationNames.south;
-//     }
-//   }
-//   else {
-//     if (newGameX > gameX) {
-//       an = kMoveAnimationNames.east;
-//     }
-//     else {
-//       an = kMoveAnimationNames.west;
-//     }
-//   }
-//   Animation* animation = AnimationCache::getInstance()->getAnimation(an);
-//   animation->setDelayPerUnit(iterationDuration/animation->getTotalDelayUnits());
-//   Animate* animate = Animate::create(animation);
-
-//   CallFunc *cf = CallFunc::create([this]() {
-//     this->setSpriteFrame(kDefaultFrameName);
-//   });
-
-//   Sequence* seq = Sequence::create(animate, cf, nullptr);
-//   runAction(seq);
-
-//   MoveTo* ma = MoveTo::create(iterationDuration, newPosition);
-//   runAction(ma);
-
-//   gameX = newGameX;
-//   gameY = newGameY;
-
-// }
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-// bool PlayerCarNode::initSelf() {
-//   if (!initWithSpriteFrameName(kRedCarFrameName)) {
-//     C6_C2(c6, "Failed to init with file ", kRedCarFrameName);
-//     return false;    //
-//   }
-
-//   return true;
-// }
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-void StaticElementsKeeper::setCamera(Camera *cameraPtr) {
-  camera = cameraPtr;
+  MoveTo* mt = MoveTo::create(timeInterval, newPos);
+  mt->setTag(kMoveActionTag);
+  lifesSprite->runAction(mt);
 }
 
-// // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-// void PlayerCarNode::setInitialPos(const cocos2d::Vec2 carPos) {
-//   expectedCarPos = carPos;
-
-//   setPosition(carPos);
-// }
-
-// // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-// void PlayerCarNode::setLines(const float leftLineX, const float rightLineX) {
-//   currentLineIndex = 1;
-//   linePositions[0] = leftLineX;
-//   linePositions[1] = rightLineX;
-// }
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

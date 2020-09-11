@@ -36,6 +36,7 @@ list(APPEND GAME_SOURCE
      Sources/PlayerCarNode.cpp
      Sources/RoadScene.cpp
      Sources/StaticElementsKeeper.cpp
+     Sources/ZOrderConstImpl.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
@@ -43,6 +44,8 @@ list(APPEND GAME_HEADER
      Sources/PlayerCarNode.h
      Sources/RoadScene.h
      Sources/StaticElementsKeeper.h
+     Sources/ZOrderConstTypes.h
+     Sources/ZOrderConstValues.h
      )
 
 if(ANDROID)
