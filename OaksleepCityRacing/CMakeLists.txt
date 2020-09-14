@@ -32,20 +32,20 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
-     Sources/EnemyCarNode.cpp
-     Sources/PlayerCarNode.cpp
-     Sources/RoadScene.cpp
-     Sources/StaticElementsKeeper.cpp
      Sources/ZOrderConstImpl.cpp
+     Sources/road/EnemyCarNode.cpp
+     Sources/road/PlayerCarNode.cpp
+     Sources/road/RoadScene.cpp
+     Sources/road/StaticElementsKeeper.cpp     
      Sources/ui/MainMenuScene.cpp
      Sources/ui/MainWindowNode.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
-     Sources/EnemyCarNode.h
-     Sources/PlayerCarNode.h
-     Sources/RoadScene.h
-     Sources/StaticElementsKeeper.h
+     Sources/road/EnemyCarNode.h
+     Sources/road/PlayerCarNode.h
+     Sources/road/RoadScene.h
+     Sources/road/StaticElementsKeeper.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
      Sources/ui/MainMenuScene.h
