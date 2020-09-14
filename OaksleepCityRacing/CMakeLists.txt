@@ -37,6 +37,8 @@ list(APPEND GAME_SOURCE
      Sources/RoadScene.cpp
      Sources/StaticElementsKeeper.cpp
      Sources/ZOrderConstImpl.cpp
+     Sources/ui/MainMenuScene.cpp
+     Sources/ui/MainWindowNode.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
@@ -46,6 +48,8 @@ list(APPEND GAME_HEADER
      Sources/StaticElementsKeeper.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
+     Sources/ui/MainMenuScene.h
+     Sources/ui/MainWindowNode.h
      )
 
 if(ANDROID)

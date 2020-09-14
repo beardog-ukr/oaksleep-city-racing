@@ -338,13 +338,9 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
 
   if (EventKeyboard::KeyCode::KEY_BACKSPACE == keyCode) {
     C6_D1(c6, "That was KEY_BACKSPACE, it stops car");
-//    unschedule(CC_SCHEDULE_SELECTOR(RoadScene::doSingleMove));
   }
   else if (EventKeyboard::KeyCode::KEY_A == keyCode) {
     if (alreadyMoving) {
-//      if (playerCar->setGearUp()) {
-//        reevaluateMove();
-//      }
       playerCar->setGearUp();
     }
     else {
@@ -354,9 +350,6 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   else if (EventKeyboard::KeyCode::KEY_Z == keyCode) {
     if (alreadyMoving) {
       playerCar->setGearDown();
-//      if (playerCar->setGearDown()) {
-//        reevaluateMove();
-//      }
     }
     else {
       startMoving();
@@ -365,19 +358,11 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
   else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keyCode) {
     if (alreadyMoving) {
       playerCar->makeTurnLeft();
-//      const pair<float, float> turnResult = playerCar->doTurnLeft();
-//      if (turnResult.first > 0) {
-//        staticElementsKeeper->doMove(turnResult);
-//      }
     }
   }
   else if (EventKeyboard::KeyCode::KEY_RIGHT_ARROW == keyCode) {
     if (alreadyMoving) {
       playerCar->makeTurnRight();
-//      const pair<float, float> turnResult = playerCar->doTurnRight();
-//      if (turnResult.first > 0) {
-//        staticElementsKeeper->doMove(turnResult);
-//      }
     }
   }
   else if (EventKeyboard::KeyCode::KEY_K == keyCode) {
@@ -386,7 +371,7 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
     }
   }
   else if (EventKeyboard::KeyCode::KEY_X == keyCode) {
-    c6->d(__c6_MN__, "Need to get out.");
+    c6->d(__c6_MN__, "Need to get out (debug, x pressed).");
 
     // Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();

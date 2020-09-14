@@ -3,6 +3,14 @@
 
 // using namespace oaksleep_city_racing; does not work
 
+const struct oaksleep_city_racing::MainMenuSceneZOrderValues
+oaksleep_city_racing::kMainMenuSceneZO = {
+  .background = 10,
+  .window = 20,
+  .mainLabel = 21,
+  .button = 30
+};
+
 const struct oaksleep_city_racing::RoadSceneZOrderValues oaksleep_city_racing::kRoadSceneZO = {
   .terrain = 10,
   .road = 11,

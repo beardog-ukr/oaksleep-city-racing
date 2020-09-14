@@ -2,6 +2,13 @@
 
 namespace oaksleep_city_racing {
 
+struct MainMenuSceneZOrderValues {
+  int background;
+  int window;
+  int mainLabel;
+  int button;
+};
+
 struct RoadSceneZOrderValues {
   int terrain;
   int road;
@@ -13,14 +20,5 @@ struct RoadSceneZOrderValues {
   int lifesIndicator;
   int gearIndicator;
 };
-
-
-// enum ZOrderValues {
-//   kTerrainTileZOrder = 10,
-//   kRoadTileZOrder = 11,
-//   kRoadTileLabelZOrder = 12,
-
-//   kCarZOrder = 20
-// };
 
 }

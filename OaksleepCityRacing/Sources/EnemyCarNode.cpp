@@ -1,6 +1,5 @@
 #include "EnemyCarNode.h"
 using namespace oaksleep_city_racing;
-//#include "StaticElementsKeeper.h"
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
