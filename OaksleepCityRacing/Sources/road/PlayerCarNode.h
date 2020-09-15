@@ -26,23 +26,14 @@ public:
   bool setGearDown();// returns true if gear actually changed
   bool setGearUp();
 
-//  std::pair<float, float>  doTurnRight();
-//  std::pair<float, float>  doTurnLeft();
   bool isTurning();
   bool makeTurnLeft();
   bool makeTurnRight();
 
   void reactToEnemyContact();
 
-  // void setGamePosition(const int gameX, const int gameY);
-  // void doAttackTo(const int gameX, const int gameY);
-  // void doChangePositionTo(const int gameX, const int gameY);
-
-  // int getValue() const;
-
-  // static void unloadAnimations();
-
   static const int kTag;
+  static const int kTurnDistance;
 
 protected:
   PlayerCarNode();
@@ -65,16 +56,6 @@ protected:
 
 
   StaticElementsKeeper* staticElementsKeeper;
-
-//  cocos2d::Camera* camera;
-//  float cameraCarPosDifference;
-
-//  void doMoveSelf();//const float newX, const float newY);
-//  void doMoveStaticElements(const int moveDistance);
-
-  // float iterationDuration;
-
-  // cocos2d::Vec2 calculatePosition(const int x, const int y) const;
 };
 
 }

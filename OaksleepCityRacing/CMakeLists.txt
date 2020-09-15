@@ -34,7 +34,9 @@ list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp
      Sources/ZOrderConstImpl.cpp
      Sources/road/EnemyCarNode.cpp
+     Sources/road/EnemyCarsKeeper.cpp
      Sources/road/PlayerCarNode.cpp
+     Sources/road/RoadNode.cpp
      Sources/road/RoadScene.cpp
      Sources/road/StaticElementsKeeper.cpp     
      Sources/ui/MainMenuScene.cpp
@@ -42,12 +44,14 @@ list(APPEND GAME_SOURCE
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
-     Sources/road/EnemyCarNode.h
-     Sources/road/PlayerCarNode.h
-     Sources/road/RoadScene.h
-     Sources/road/StaticElementsKeeper.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
+     Sources/road/EnemyCarNode.h
+     Sources/road/EnemyCarsKeeper.cpp
+     Sources/road/PlayerCarNode.h
+     Sources/road/RoadNode.h
+     Sources/road/RoadScene.h
+     Sources/road/StaticElementsKeeper.h
      Sources/ui/MainMenuScene.h
      Sources/ui/MainWindowNode.h
      )

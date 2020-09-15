@@ -6,7 +6,7 @@
 namespace oaksleep_city_racing {
 
 class PlayerCarNode;
-// class EnemyCarNode;
+class EnemyCarsKeeper;
 
 class RoadScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
@@ -21,7 +21,7 @@ protected:
 
   virtual bool init();
   int initRoad();
-  bool initTerrain();
+//  bool initTerrain();
   bool initEnemyCars(const int roadLength);
   bool initPlayerCar(const int roadLength);
   bool initKeyboardProcessing();
@@ -36,6 +36,8 @@ protected:
 
   static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
   static void unloadSpriteCache();
+
+  EnemyCarsKeeper* enemyCarsKeeper;
 };
 
 }

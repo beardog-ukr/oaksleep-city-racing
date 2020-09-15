@@ -1,7 +1,9 @@
 #include "RoadScene.h"
 
 #include "EnemyCarNode.h"
+#include "EnemyCarsKeeper.h"
 #include "PlayerCarNode.h"
+#include "RoadNode.h"
 #include "StaticElementsKeeper.h"
 
 #include "ZOrderConstTypes.h"
@@ -50,11 +52,14 @@ static const string kPlistFileName = "road_scene.plist";
 
 RoadScene::RoadScene() {
   alreadyMoving = false;
+  enemyCarsKeeper = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadScene::~RoadScene() {
+  delete enemyCarsKeeper;
+
   unloadSpriteCache();
 }
 
@@ -102,9 +107,9 @@ bool RoadScene::init() {
   //else
   phw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
-  if (!initTerrain()) {
-    return false;
-  }
+//  if (!initTerrain()) {
+//    return false;
+//  }
 
   const int roadLength = initRoad();
   if (roadLength == 0) {
@@ -134,37 +139,46 @@ bool RoadScene::init() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool RoadScene::initEnemyCars(const int roadLength) {
-  const Size currentWindowSize = getContentSize();
 
-  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
-  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
-
-  EnemyCarNode* enemyCar = EnemyCarNode::create(c6);
-  if (enemyCar == nullptr) {
+  enemyCarsKeeper = EnemyCarsKeeper::create(c6);
+  if (enemyCarsKeeper == nullptr) {
     return false;
   }
 
-  enemyCar->setLanes(leftLane, rightLane);
-  enemyCar->setInitialPos(0,100);
-  enemyCar->setRoadLength(roadLength);
-//  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
-  addChild(enemyCar, kRoadSceneZO.enemyCar);
+  return enemyCarsKeeper->generateCars(roadLength, this);
+//  const Size currentWindowSize = getContentSize();
 
-  enemyCar->doMove();
+//  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
+//  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
 
-  enemyCar = EnemyCarNode::create(c6);
-  if (enemyCar == nullptr) {
-    return false;
-  }
+//  EnemyCarNode* enemyCar = EnemyCarNode::create(c6);
+//  if (enemyCar == nullptr) {
+//    return false;
+//  }
 
-  enemyCar->setLanes(leftLane, rightLane);
-  enemyCar->setInitialPos(1,1000);
-  enemyCar->setRoadLength(roadLength);
-//  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
-  addChild(enemyCar, kRoadSceneZO.enemyCar);
+//  enemyCar->setLanes(leftLane, rightLane);
+//  enemyCar->setInitialPos(0,100);
+//  enemyCar->setRoadLength(roadLength);
+////  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
+//  addChild(enemyCar, kRoadSceneZO.enemyCar);
 
 //  enemyCar->doMove();
-  return true;
+
+//  enemyCar = EnemyCarNode::create(c6);
+//  if (enemyCar == nullptr) {
+//    return false;
+//  }
+
+//  enemyCar->setLanes(leftLane, rightLane);
+//  enemyCar->setInitialPos(1,1000);
+//  enemyCar->setRoadLength(roadLength);
+////  enemyCar->setStaticElementsKeeper(staticElementsKeeper);
+//  addChild(enemyCar, kRoadSceneZO.enemyCar);
+
+
+
+//  enemyCar->doMove();
+//  return true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -208,79 +222,49 @@ bool RoadScene::initPlayerCar(const int roadLength) {
 int RoadScene::initRoad() {
   int roadLength = 0;
 
-  const Size currentWindowSize = getContentSize();
-  Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
-  if (sprite == nullptr) {
-    C6_C2(c6, "Failed to open ", kSpriteFileNames.road01);
-    return 0;
+  RoadNode* roadNode = RoadNode::create(getContentSize(), c6);
+  if (roadNode == nullptr) {
+    return roadLength;
   }
 
-  const Size spriteSize = sprite->getContentSize();
-  int xPos = currentWindowSize.width/2;
-  int yPos = lround(spriteSize.height/2);
+  roadNode->setAnchorPoint(Vec2(0,0));
+  addChild(roadNode, kRoadSceneZO.terrain);
 
-  for (int i = 0; i<100; i++) {
-    Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
-
-    tsp->setPosition(Vec2(xPos, yPos));
-    tsp->setOpacity(kElementsOpacity);
-
-    addChild(tsp, kRoadSceneZO.road);
-
-    if ((i%10==0)) {
-      std::ostringstream oss;
-      oss << "L:" << i;
-
-      Label* label = Label::createWithTTF(oss.str(), "fonts/Marker Felt.ttf", 24);
-      if (label == nullptr) {
-        C6_C1(c6, "Failed to open 'fonts/Marker Felt.ttf'");
-      }
-      else {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(currentWindowSize.width/2 - currentWindowSize.width/8, yPos));
-
-        // add the label as a child to this layer
-        this->addChild(label, kRoadSceneZO.roadLabel);
-      }
-    }
-
-    yPos += (spriteSize.height -1);
-    roadLength += spriteSize.height;// later it will not depend on number of iterations
-  }
+  roadLength = roadNode->getLength();
 
   return roadLength;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initTerrain() {
-  const Size currentWindowSize = getContentSize();
-  Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
-  if (sprite == nullptr) {
-    C6_C2(c6, "Failed to open ", kSpriteFileNames.terrain);
-    return false;
-  }
+//bool RoadScene::initTerrain() {
+//  const Size currentWindowSize = getContentSize();
+//  Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
+//  if (sprite == nullptr) {
+//    C6_C2(c6, "Failed to open ", kSpriteFileNames.terrain);
+//    return false;
+//  }
 
-  const Size spriteSize = sprite->getContentSize();
-  int xPos = currentWindowSize.width - spriteSize.width/2;
-  int yPos = 0;
+//  const Size spriteSize = sprite->getContentSize();
+//  int xPos = currentWindowSize.width - spriteSize.width/2;
+//  int yPos = 0;
 
-  for (int i = 0; i<100; i++) {
-    Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
-    tsp->setPosition(Vec2(0, yPos));
-    tsp->setOpacity(kElementsOpacity);
-    addChild(tsp, kRoadSceneZO.terrain);
+//  for (int i = 0; i<100; i++) {
+//    Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
+//    tsp->setPosition(Vec2(0, yPos));
+//    tsp->setOpacity(kElementsOpacity);
+//    addChild(tsp, kRoadSceneZO.terrain);
 
-    tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
-    tsp->setPosition(Vec2(xPos, yPos));
-    tsp->setOpacity(kElementsOpacity);
-    addChild(tsp, kRoadSceneZO.terrain);
+//    tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.terrain);
+//    tsp->setPosition(Vec2(xPos, yPos));
+//    tsp->setOpacity(kElementsOpacity);
+//    addChild(tsp, kRoadSceneZO.terrain);
 
-    yPos += (spriteSize.height -1);
-  }
+//    yPos += (spriteSize.height -1);
+//  }
 
-  return true;
-}
+//  return true;
+//}
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 

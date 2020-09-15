@@ -16,7 +16,7 @@ static const int kMoveActionTag = 222;
 
 static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
-static const int kTurnDistance = 200;
+const int PlayerCarNode::kTurnDistance = 200;
 
 static const string kRedCarFrameName = "ocr_game/cars/red_car_5";
 

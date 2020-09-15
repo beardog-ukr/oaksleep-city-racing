@@ -85,8 +85,20 @@ std::pair<float, float> EnemyCarNode::doMove() {
   newPos.y = currentPos.y + path;
 
   MoveTo* mt = MoveTo::create(time, newPos);
-  mt->setTag(kMoveActionTag);
-  runAction(mt);
+//  mt->setTag(kMoveActionTag);
+
+
+  CallFunc* cf = CallFunc::create([this]() {
+    PhysicsBody* physicsBody = this->getPhysicsBody();
+    if (physicsBody != nullptr) {
+      physicsBody->setContactTestBitmask(0x00);  // disable further contacts for this car
+    }
+  });
+
+  Sequence* seq = Sequence::create(mt, cf, nullptr);
+  seq->setTag(kMoveActionTag);
+
+  runAction(seq);
 
 // --- prepare move info
   std::pair<float, float> result;

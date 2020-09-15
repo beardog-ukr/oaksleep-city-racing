@@ -29,6 +29,8 @@ protected:
   bool initSelf();
   bool initPhysicsBody();
 
+//  bool isValidTarget;
+
   int currentLaneIndex;
   float lanes[3];// line positions start from right lane
 
