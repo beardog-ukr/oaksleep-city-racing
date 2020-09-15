@@ -38,7 +38,9 @@ list(APPEND GAME_SOURCE
      Sources/road/PlayerCarNode.cpp
      Sources/road/RoadNode.cpp
      Sources/road/RoadScene.cpp
-     Sources/road/StaticElementsKeeper.cpp     
+     Sources/road/StaticElementsKeeper.cpp
+     Sources/ui/GameEndScene.cpp
+     Sources/ui/GameEndWindowNode.cpp
      Sources/ui/MainMenuScene.cpp
      Sources/ui/MainWindowNode.cpp
      )
@@ -52,6 +54,8 @@ list(APPEND GAME_HEADER
      Sources/road/RoadNode.h
      Sources/road/RoadScene.h
      Sources/road/StaticElementsKeeper.h
+     Sources/ui/GameEndScene.h
+     Sources/ui/GameEndWindowNode.h
      Sources/ui/MainMenuScene.h
      Sources/ui/MainWindowNode.h
      )

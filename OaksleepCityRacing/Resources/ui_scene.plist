@@ -45,7 +45,7 @@
     <key>spriteSourceSize</key>
     <string>{50,51}</string>
     <key>textureRect</key>
-    <string>{{414,225},{50,51}}</string>
+    <string>{{362,331},{50,51}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -61,6 +61,21 @@
     <string>{50,51}</string>
     <key>textureRect</key>
     <string>{{362,225},{50,51}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/main/button_replay</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{50,51}</string>
+    <key>spriteSourceSize</key>
+    <string>{50,51}</string>
+    <key>textureRect</key>
+    <string>{{414,225},{50,51}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
