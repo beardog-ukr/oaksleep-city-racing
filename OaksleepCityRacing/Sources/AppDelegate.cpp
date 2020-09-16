@@ -74,8 +74,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
   register_all_packages();
 
   // create a scene. it's an autorelease object
-  Scene* scene = oaksleep_city_racing::RoadScene::createScene(c6);
-//  Scene* scene = oaksleep_city_racing::MainMenuScene::createScene(c6);
+//  Scene* scene = oaksleep_city_racing::RoadScene::createScene(c6);
+  Scene* scene = oaksleep_city_racing::MainMenuScene::createScene(c6);
 //  Scene* scene = oaksleep_city_racing::GameEndScene::createScene(false, c6);
   if (scene == nullptr) {
     C6_C1(c6, "Failed to create a scene.");

@@ -23,40 +23,6 @@ static const struct {
   .terrain = "ocr_game/terrain/soil_tile"
 };
 
-
-
-// static const int kGearMax = 4;
-// static const int kLineMax = 2;
-
-// static const int kMoveActionTag = 222;
-
-// static const int kSingleMoveDistance = 400;
-// static const float kSingleMoveInterval = 2.0;
-// static const int kTurnDistance = 200;
-
-// static const string kRedCarFrameName = "ocr_game/cars/red_car_5";
-
-// static const int kRedCarBodyPointsCount = 12;
-// static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
-//   {.x =  14, .y = -78     },
-//   {.x = -14, .y = -78     },
-//   {.x =  30, .y = -67     },
-//   {.x = -29, .y = -67     },
-//   {.x =  32, .y =          -43     },
-//   {.x = -32, .y =          -43     },
-//   {.x =  36, .y =          51      },
-//   {.x = -36, .y =          51      },
-//   {.x =  28, .y =          69      },
-//   {.x = -29, .y =          69      },
-//   {.x =  18, .y =          77      },
-//   {.x = -16, .y =          77      },
-// };
-
-// static const int kPlayerCarCategoryBitmask = 0x01;
-// static const int kEnemyCarCategoryBitmask = 0x02;
-
-// const int PlayerCarNode::kTag = 20;
-
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadNode::RoadNode() {
