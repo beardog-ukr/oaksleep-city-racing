@@ -21,12 +21,19 @@ static const string kLifeWidgetSprites[kLifeWidgetMax] = {
   "ocr_game/ui_road/hp_3", "ocr_game/ui_road/hp_4"
 };
 
+static const int kGearIndicatorMax = 4;
+static const string kGearIndicatorSprites[kGearIndicatorMax] = {
+  "ocr_game/ui_road/gear_1", "ocr_game/ui_road/gear_2",
+  "ocr_game/ui_road/gear_3", "ocr_game/ui_road/gear_4",
+};
+
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 StaticElementsKeeper::StaticElementsKeeper() {
   camera = nullptr;
 
   lifesSprite = nullptr;
+  gearSprite = nullptr;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -54,6 +61,24 @@ StaticElementsKeeper* StaticElementsKeeper::create(Scene* roadScene, shared_ptr<
 
 //  pRet->autorelease();
   return pRet;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool StaticElementsKeeper::initGearIndicator(Scene* roadScene) {
+  gearSprite = Sprite::createWithSpriteFrameName(kGearIndicatorSprites[0]);
+  if (gearSprite == nullptr) {
+    C6_W2(c6, "Failed to open: ", kGearIndicatorSprites[0]);
+    return false;
+  }
+
+  const Size rscs = roadScene->getContentSize();
+  gearSprite->setAnchorPoint(Vec2(1,1));
+  gearSprite->setPosition(rscs.width,rscs.height);
+
+  roadScene->addChild(gearSprite, kRoadSceneZO.gearIndicator);
+
+  return true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -87,6 +112,10 @@ bool StaticElementsKeeper::initSelf(cocos2d::Scene* roadScene) {
     return false;
   }
 
+  if (!initGearIndicator(roadScene)) {
+    return false;
+  }
+
   if (!initLifesWidget(roadScene)) {
     return false;
   }
@@ -101,6 +130,7 @@ void StaticElementsKeeper::doMove(const std::pair<float, float> moveInfo) {
   const float timeInterval = moveInfo.second;
 
   doMoveCamera(moveDistance, timeInterval);
+  doMoveGearIndicator(moveDistance, timeInterval);
   doMoveLifeIndicator(moveDistance, timeInterval);
 }
 
@@ -120,6 +150,19 @@ void StaticElementsKeeper::doMoveCamera(const float moveDistance, const float ti
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+void StaticElementsKeeper::doMoveGearIndicator(const float moveDistance, const float timeInterval) {
+  gearSprite->stopAllActionsByTag(kMoveActionTag);
+
+  const Vec2 currentPos = gearSprite->getPosition();
+  Vec2 newPos = Vec2(currentPos.x, currentPos.y + moveDistance);
+
+  MoveTo* mt = MoveTo::create(timeInterval, newPos);
+  mt->setTag(kMoveActionTag);
+  gearSprite->runAction(mt);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 void StaticElementsKeeper::doMoveLifeIndicator(const float moveDistance, const float timeInterval) {
   lifesSprite->stopAllActionsByTag(kMoveActionTag);
 
@@ -129,6 +172,21 @@ void StaticElementsKeeper::doMoveLifeIndicator(const float moveDistance, const f
   MoveTo* mt = MoveTo::create(timeInterval, newPos);
   mt->setTag(kMoveActionTag);
   lifesSprite->runAction(mt);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void StaticElementsKeeper::setGearIndicator(const int value) {
+  const int idx = value -1;
+  if ((idx<0)||(idx >= kGearIndicatorMax)) {
+    return;
+  }
+
+  if (gearSprite == nullptr) {
+    return;    // impossible
+  }
+
+  gearSprite->setSpriteFrame(kGearIndicatorSprites[idx]);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

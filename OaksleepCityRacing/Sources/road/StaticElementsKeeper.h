@@ -15,7 +15,8 @@ public:
   static StaticElementsKeeper* create(cocos2d::Scene* roadScene,
                                       std::shared_ptr<SixCatsLogger> c6);
 
-  void setLifesCounter(const int value);
+  void setLifesCounter(const int value);// expects values 0..4, lower is more dead
+  void setGearIndicator(const int value); // expects 1..4, large is faster
 
 //  void setCamera(cocos2d::Camera* camera);
   void doMove(const std::pair<float, float> moveInfo);
@@ -26,12 +27,15 @@ protected:
 //  virtual ~StaticElementsKeeper();
 
   bool initSelf(cocos2d::Scene* roadScene);
+  bool initGearIndicator(cocos2d::Scene* roadScene);
   bool initLifesWidget(cocos2d::Scene* roadScene);
 
   void doMoveCamera(const float moveDistance, const float timeInterval);
+  void doMoveGearIndicator(const float moveDistance, const float timeInterval);
   void doMoveLifeIndicator(const float moveDistance, const float timeInterval);
 
   cocos2d::Sprite* lifesSprite;
+  cocos2d::Sprite* gearSprite;
 
   cocos2d::Camera* camera;
 };

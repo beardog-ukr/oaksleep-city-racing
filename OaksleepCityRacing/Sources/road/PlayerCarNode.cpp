@@ -315,6 +315,7 @@ bool PlayerCarNode::setGearDown() {
 
   currentGear = currentGear -1;
   doMove();
+  staticElementsKeeper->setGearIndicator(currentGear);
 
   return true;
 }
@@ -327,8 +328,8 @@ bool PlayerCarNode::setGearUp() {
   }
 
   currentGear = currentGear +1;
-
   doMove();
+  staticElementsKeeper->setGearIndicator(currentGear);
 
   return true;
 }

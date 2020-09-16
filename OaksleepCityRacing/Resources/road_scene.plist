@@ -120,7 +120,7 @@
     <key>spriteSourceSize</key>
     <string>{300,223}</string>
     <key>textureRect</key>
-    <string>{{0,0},{300,223}}</string>
+    <string>{{0,225},{300,223}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -135,7 +135,7 @@
     <key>spriteSourceSize</key>
     <string>{300,223}</string>
     <key>textureRect</key>
-    <string>{{0,225},{300,223}}</string>
+    <string>{{0,0},{300,223}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -166,6 +166,66 @@
     <string>{223,223}</string>
     <key>textureRect</key>
     <string>{{302,0},{223,223}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/gear_1</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{539,225},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/gear_2</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{539,339},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/gear_3</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{539,282},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/gear_4</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{390,541},{55,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
