@@ -23,6 +23,8 @@ public:
 
   std::pair<float, float> doMove();
 
+  void doDie();
+
   bool setGearDown();// returns true if gear actually changed
   bool setGearUp();
 
@@ -53,7 +55,8 @@ protected:
 
   float initialY;
 
-
+  int lifesCounter;
+//  void doDie();
 
   StaticElementsKeeper* staticElementsKeeper;
 };

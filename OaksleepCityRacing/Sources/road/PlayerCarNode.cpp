@@ -1,6 +1,7 @@
 #include "PlayerCarNode.h"
 using namespace oaksleep_city_racing;
-#include "StaticElementsKeeper.h"
+#include "road/StaticElementsKeeper.h"
+#include "ui/GameEndScene.h"
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -41,6 +42,8 @@ static const int kEnemyCarCategoryBitmask = 0x02;
 
 const int PlayerCarNode::kTag = 20;
 
+const int kLifesMax = 2;
+
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 PlayerCarNode::PlayerCarNode() {
@@ -52,6 +55,8 @@ PlayerCarNode::PlayerCarNode() {
   initialY = -1;
 
   staticElementsKeeper = nullptr;
+
+  lifesCounter = kLifesMax;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -117,28 +122,58 @@ void PlayerCarNode::doChangeLane() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+void PlayerCarNode::doDie() {
+  stopAllActionsByTag(kMoveActionTag);
+
+  currentGear = 1;
+
+  // --- last move action
+  Vec2 currentPos = getPosition();
+  float path = kTurnDistance;
+  float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
+  float time = path / velocity;
+  C6_T4(c6, "Here path = ", path, " time = ", time);
+
+  Vec2 newPos;
+  newPos.x = lanes[currentLaneIndex];
+  newPos.y = currentPos.y + path;
+
+  MoveTo* mt = MoveTo::create(time, newPos);
+  mt->setTag(kMoveActionTag);
+  runAction(mt);
+
+  // --- other actions that indicate dying
+  RotateBy* rb = RotateBy::create(time, 20);
+
+  CallFunc* cf = CallFunc::create([this]() {
+    Scene* ges = GameEndScene::createScene(false, c6);
+    if (ges == nullptr) {
+      return;
+    }
+    //
+    Director::getInstance()->replaceScene(ges);
+  });
+
+  DelayTime* dta =  DelayTime::create(time);
+
+  Sequence* seq = Sequence::create(rb, dta, cf, nullptr);
+  seq->setTag(kMoveActionTag);
+
+  runAction(seq);
+
+  // --- prepare move info
+  std::pair<float, float> result;
+  result.first = path;
+  result.second = time*2; // slightly slower camera effect
+
+  // --- reset camera movement
+  staticElementsKeeper->doMove(result);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 std::pair<float, float> PlayerCarNode::doMove() {
   stopAllActionsByTag(kMoveActionTag); // just in case
-
-//  int moveDistance = kSingleMoveDistance * currentGear;
-
-//  Vec2 newPos = getPosition();
-//  newPos.y = newPos.y + moveDistance;
-
-//  CallFunc* cf = CallFunc::create([this]() {
-//    doMove();
-//  });
-
-//  MoveTo* mt = MoveTo::create(kSingleMoveInterval, newPos);
-////  mt->setTag(kMoveActionTag);
-//  Sequence* seq =  Sequence::create(mt, cf, nullptr);
-//  seq->setTag(kMoveActionTag);
-//  runAction(seq);
-
-//  // --- prepare move info
-//  std::pair<float, float> result;
-//  result.first = moveDistance;
-//  result.second = kSingleMoveInterval;
 
   Vec2 currentPos = getPosition();
   float path = roadLength - currentPos.y;
@@ -151,8 +186,22 @@ std::pair<float, float> PlayerCarNode::doMove() {
   newPos.y = currentPos.y + path;
 
   MoveTo* mt = MoveTo::create(time, newPos);
-  mt->setTag(kMoveActionTag);
-  runAction(mt);
+//  mt->setTag(kMoveActionTag);
+//  runAction(mt);
+
+  CallFunc* cf = CallFunc::create([this]() {
+    Scene* ges = GameEndScene::createScene(true, c6);
+    if (ges == nullptr) {
+      return;
+    }
+    //
+    Director::getInstance()->replaceScene(ges);
+  });
+
+  Sequence* seq = Sequence::create(mt, cf, nullptr);
+  seq->setTag(kMoveActionTag);
+  runAction(seq);
+
 
 // --- prepare move info
   std::pair<float, float> result;
@@ -239,6 +288,12 @@ bool PlayerCarNode::makeTurnRight() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void PlayerCarNode::reactToEnemyContact() {
+  lifesCounter--;
+  if (lifesCounter == 0) {
+    doDie();
+    return;
+  }
+
   if (laneChangeInProgress) {
     C6_D1(c6, "Conflict ignored because of lanes changing in process");
     return;

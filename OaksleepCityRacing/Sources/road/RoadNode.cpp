@@ -140,6 +140,9 @@ bool RoadNode::initRoad() {
     lengthTotal += spriteSize.height;  // later it will not depend on number of iterations
   }
 
+  // --- reduce length
+  lengthTotal = lengthTotal - 640;
+
   return true;
 }
 

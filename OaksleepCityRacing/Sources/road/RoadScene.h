@@ -16,12 +16,10 @@ protected:
   RoadScene();
   virtual ~RoadScene();
 
-//  StaticElementsKeeper* staticElementsKeeper;
   PlayerCarNode* playerCar;
 
   virtual bool init();
   int initRoad();
-//  bool initTerrain();
   bool initEnemyCars(const int roadLength);
   bool initPlayerCar(const int roadLength);
   bool initKeyboardProcessing();

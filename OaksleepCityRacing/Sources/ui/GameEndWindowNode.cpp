@@ -142,8 +142,6 @@ bool GameEndWindowNode::initSelf() {
 void GameEndWindowNode::mcClose(cocos2d::Ref *pSender) {
   // c6->d(__c6_MN__, "Need to get out.");
 
-  // Close the cocos2d-x game scene and quit the application
-  // Director::getInstance()->end();
   Scene* mainMenuScene = MainMenuScene::createScene(c6);
   if (mainMenuScene == nullptr) {
     C6_D1(c6, "Failed to create main menu scene for some reason");

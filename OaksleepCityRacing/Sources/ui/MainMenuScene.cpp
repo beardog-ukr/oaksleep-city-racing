@@ -142,11 +142,6 @@ bool MainMenuScene::initBackground() {
   }
 
   return true;
-
-
-  // const Size spriteSize = sprite->getContentSize();
-  // int xPos = currentWindowSize.width/2;
-  // int yPos = lround(spriteSize.height/2);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -154,14 +149,6 @@ bool MainMenuScene::initBackground() {
 bool MainMenuScene::initMenu() {
   const Size currentWindowSize = getContentSize();
 
-  // Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.window);
-  // if (sprite == nullptr) {
-  //   C6_C2(c6, "Failed to open ", kSpriteFileNames.window);
-  //   return false;
-  // }
-
-  // sprite->setPosition(currentWindowSize.width/2, currentWindowSize.height/2);
-  // addChild(sprite, 100);
   MainWindowNode* mwNode = MainWindowNode::create(c6);
   if (mwNode == nullptr) {
     return false;
@@ -179,10 +166,10 @@ bool MainMenuScene::loadSpriteCache(std::shared_ptr<SixCatsLogger> c6) {
   SpriteFrameCache* const sfc = SpriteFrameCache::getInstance();
 
   sfc->addSpriteFramesWithFile(kPlistFileName);
-  if (!sfc->isSpriteFramesWithFileLoaded(kPlistFileName)) {
-    C6_C2(c6, "Failed to find ", kPlistFileName);
-    return false;
-  }
+//  if (!sfc->isSpriteFramesWithFileLoaded(kPlistFileName)) {
+//    C6_C2(c6, "Failed to load ", kPlistFileName);
+//    return false;
+//  }
 
   // AnimationCache * const ac = AnimationCache::getInstance();
   // ac->addAnimationsWithFile(kAnimationsPlistFileName);
