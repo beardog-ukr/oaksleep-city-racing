@@ -45,7 +45,7 @@
     <key>spriteSourceSize</key>
     <string>{79,162}</string>
     <key>textureRect</key>
-    <string>{{465,225},{73,156}}</string>
+    <string>{{302,406},{73,156}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -90,7 +90,7 @@
     <key>spriteSourceSize</key>
     <string>{80,162}</string>
     <key>textureRect</key>
-    <string>{{302,406},{72,155}}</string>
+    <string>{{465,225},{72,155}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -169,7 +169,7 @@
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_full</key>
+   <key>ocr_game/ui_road/hp_0</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -184,13 +184,73 @@
     <key>textureRotated</key>
     <false/>
    </dict>
+   <key>ocr_game/ui_road/hp_1</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{68,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{68,55}</string>
+    <key>textureRect</key>
+    <string>{{0,563},{68,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/hp_2</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{68,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{68,55}</string>
+    <key>textureRect</key>
+    <string>{{140,563},{68,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/hp_3</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{68,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{68,55}</string>
+    <key>textureRect</key>
+    <string>{{210,563},{68,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/ui_road/hp_4</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{68,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{68,55}</string>
+    <key>textureRect</key>
+    <string>{{70,563},{68,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
   </dict>
   <key>metadata</key>
   <dict>
    <key>format</key>
    <integer>3</integer>
    <key>size</key>
-   <string>{598,563}</string>
+   <string>{598,620}</string>
    <key>textureFileName</key>
    <string>road_scene.png</string>
   </dict>

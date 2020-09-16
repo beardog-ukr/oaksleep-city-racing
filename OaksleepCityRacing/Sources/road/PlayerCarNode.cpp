@@ -10,6 +10,8 @@ using namespace oaksleep_city_racing;
 USING_NS_CC;
 using namespace std;
 
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 static const int kGearMax = 4;
 static const int kLineMax = 2;
 
@@ -42,7 +44,7 @@ static const int kEnemyCarCategoryBitmask = 0x02;
 
 const int PlayerCarNode::kTag = 20;
 
-const int kLifesMax = 2;
+const int kLifesMax = 5;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -56,7 +58,7 @@ PlayerCarNode::PlayerCarNode() {
 
   staticElementsKeeper = nullptr;
 
-  lifesCounter = kLifesMax;
+  lifesCounter = kLifesMax-1;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -289,6 +291,7 @@ bool PlayerCarNode::makeTurnRight() {
 
 void PlayerCarNode::reactToEnemyContact() {
   lifesCounter--;
+  staticElementsKeeper->setLifesCounter(lifesCounter);
   if (lifesCounter == 0) {
     doDie();
     return;
@@ -362,6 +365,7 @@ void PlayerCarNode::setRoadLength(const int inRoadLength) {
 
 void PlayerCarNode::setStaticElementsKeeper(StaticElementsKeeper* keeper) {
   staticElementsKeeper = keeper;
+  staticElementsKeeper->setLifesCounter(lifesCounter);
 }
 
 

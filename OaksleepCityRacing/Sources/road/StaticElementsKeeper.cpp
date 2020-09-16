@@ -10,16 +10,22 @@ using namespace oaksleep_city_racing;
 USING_NS_CC;
 using namespace std;
 
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 static const int kMoveActionTag = 22;
-static const string kLifesSpriteFrameName = "ocr_game/ui_road/hp_full";
+//static const string kLifesSpriteFrameName = "ocr_game/ui_road/hp_full";
+
+static const int kLifeWidgetMax = 5;
+static const string kLifeWidgetSprites[kLifeWidgetMax] = {
+  "ocr_game/ui_road/hp_0", "ocr_game/ui_road/hp_1", "ocr_game/ui_road/hp_2",
+  "ocr_game/ui_road/hp_3", "ocr_game/ui_road/hp_4"
+};
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 StaticElementsKeeper::StaticElementsKeeper() {
   camera = nullptr;
 
-  lifesCounter = 5;
-  lifesLabel = nullptr;
   lifesSprite = nullptr;
 }
 
@@ -53,9 +59,10 @@ StaticElementsKeeper* StaticElementsKeeper::create(Scene* roadScene, shared_ptr<
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool StaticElementsKeeper::initLifesWidget(Scene* roadScene) {
-  lifesSprite = Sprite::createWithSpriteFrameName(kLifesSpriteFrameName);
+//  const string ss = "ocr_game/ui_road/hp_full";
+  lifesSprite = Sprite::createWithSpriteFrameName(kLifeWidgetSprites[0]);
   if (lifesSprite == nullptr) {
-    C6_W2(c6, "Failed to open ", kLifesSpriteFrameName);
+    C6_W2(c6, "Failed to open: ", kLifeWidgetSprites[0]);
     return false;
   }
 
@@ -122,6 +129,28 @@ void StaticElementsKeeper::doMoveLifeIndicator(const float moveDistance, const f
   MoveTo* mt = MoveTo::create(timeInterval, newPos);
   mt->setTag(kMoveActionTag);
   lifesSprite->runAction(mt);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void StaticElementsKeeper::setLifesCounter(const int value) {
+  if ((value<0)||(value >= kLifeWidgetMax)) {
+    return;
+  }
+
+  if (lifesSprite == nullptr) {
+    return;    // impossible
+  }
+
+  lifesSprite->setSpriteFrame(kLifeWidgetSprites[value]);
+
+//  Sprite* newSprite = Sprite::createWithSpriteFrameName(kLifeWidgetSprites[value]);
+//  if (lifesSprite == nullptr) {
+//    C6_W3(c6, "Failed to open ",kLifeWidgetSprites[value], " as life sprite");
+//    return false;
+//  }
+
+//  newSprite->setPosition();
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

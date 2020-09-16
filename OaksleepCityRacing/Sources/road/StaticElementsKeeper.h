@@ -31,9 +31,7 @@ protected:
   void doMoveCamera(const float moveDistance, const float timeInterval);
   void doMoveLifeIndicator(const float moveDistance, const float timeInterval);
 
-  int lifesCounter;
   cocos2d::Sprite* lifesSprite;
-  cocos2d::Label* lifesLabel;
 
   cocos2d::Camera* camera;
 };
