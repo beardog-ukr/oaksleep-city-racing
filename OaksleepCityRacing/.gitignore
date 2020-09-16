@@ -4,10 +4,10 @@
 /cocos2d
 
 #qt-creator stuff
-qtc*.cflags
-qtc*.config
-qtc*.creator
-qtc*.creator.user
-qtc*.cxxflags
-qtc*.files
-qtc*.includes
+OaksleepCityRacing*.cflags
+OaksleepCityRacing*.config
+OaksleepCityRacing*.creator
+OaksleepCityRacing*.creator.user
+OaksleepCityRacing*.cxxflags
+OaksleepCityRacing*.files
+OaksleepCityRacing*.includes

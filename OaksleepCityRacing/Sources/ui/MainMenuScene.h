@@ -5,24 +5,23 @@
 
 namespace oaksleep_city_racing {
 
-class HelloWorldScene : public cocos2d::Scene,
-  virtual public SixCatsLoggerLoggable {
+class MainMenuScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
-//  static cocos2d::Scene* createScene();
   static cocos2d::Scene* createScene(std::shared_ptr<SixCatsLogger> c6);
 
 protected:
-  cocos2d::Sprite* car;
-  cocos2d::Vec2 expectedCarPos;
-
-  void doMoveCar();
-  void doMoveCamera();
+  MainMenuScene();
+  virtual ~MainMenuScene();
 
   virtual bool init();
-  bool initBackgroundRoad();
-  bool initCar();
+  bool initBackground();
+  bool initMenu();
   bool initKeyboardProcessing();
+
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
+
+  static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
+  static void unloadSpriteCache();
 };
 
 }
