@@ -12,12 +12,14 @@ USING_NS_CC;
 using namespace std;
 
 static const struct {
+  string finishMark;
   string road01;
   string road02;
   string road03;
   string startMark;
   string terrain;
 } kSpriteFileNames = {
+  .finishMark = "ocr_game/terrain/mark_finish",
   .road01 = "ocr_game/terrain/road_tile_01",
   .road02 = "ocr_game/terrain/road_tile_02",
   .road03 = "ocr_game/terrain/road_tile_03",
@@ -61,10 +63,6 @@ RoadNode* RoadNode::create(const cocos2d::Size& inWindowSize, shared_ptr<SixCats
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-// int RoadNode::getLength()  const {
-//   return racingLength;
-// }
-
 void RoadNode::fillRoadInfo(RoadInfo& roadInfo) {
   roadInfo.roadLength = racingLength;
   roadInfo.startPosition = startPosition;
@@ -85,7 +83,7 @@ bool RoadNode::initRoad() {
 
   racingLength = 0;
 
-  for (int i = 0; i<100; i++) {
+  for (int i = 0; i<150; i++) {
     Sprite* tsp = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
 
     tsp->setAnchorPoint(Vec2(0.5, 0));
@@ -115,10 +113,29 @@ bool RoadNode::initRoad() {
     racingLength += spriteSize.height;  // later it will not depend on number of iterations
   }
 
+  // --- calculate total length
+  const int startDistance = totalLength;
   totalLength += racingLength;
 
   // --- reduce length
-  racingLength = racingLength - 640;
+  racingLength = racingLength - windowSize.height;
+  racingLength += startDistance;
+
+  // --- add finish mark
+  sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.finishMark);
+  if (sprite == nullptr) {
+    C6_C2(c6, "Failed to open ", kSpriteFileNames.finishMark);
+    return false;
+  }
+
+  int finishMarkPosition = racingLength + floor(sprite->getContentSize().height/2);
+  sprite->setPosition(Vec2(xPos, finishMarkPosition));
+//  sprite->setOpacity(kElementsOpacity);
+
+  addChild(sprite, kRoadSceneZO.roadLabel);
+  C6_D2(c6, "added finish mark at ", finishMarkPosition);
+
+
 
   return true;
 }

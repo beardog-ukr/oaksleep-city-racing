@@ -136,6 +136,8 @@ bool RoadScene::initEnemyCars() {
   RoadInfo roadInfo;
   roadNode->fillRoadInfo(roadInfo);
 
+  roadInfo.roadLength += getContentSize().height; // to ensule enemy cars go behind sceeen
+
   return enemyCarsKeeper->generateCars(roadInfo.roadLength, this);
 }
 

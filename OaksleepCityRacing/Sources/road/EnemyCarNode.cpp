@@ -87,7 +87,6 @@ std::pair<float, float> EnemyCarNode::doMove() {
   MoveTo* mt = MoveTo::create(time, newPos);
 //  mt->setTag(kMoveActionTag);
 
-
   CallFunc* cf = CallFunc::create([this]() {
     PhysicsBody* physicsBody = this->getPhysicsBody();
     if (physicsBody != nullptr) {
@@ -95,7 +94,7 @@ std::pair<float, float> EnemyCarNode::doMove() {
     }
   });
 
-  Sequence* seq = Sequence::create(mt, cf, nullptr);
+  Sequence* seq = Sequence::create(mt, cf, RemoveSelf::create(), nullptr);
   seq->setTag(kMoveActionTag);
 
   runAction(seq);
