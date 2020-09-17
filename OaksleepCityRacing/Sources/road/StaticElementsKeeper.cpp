@@ -107,6 +107,8 @@ bool StaticElementsKeeper::initSelf(cocos2d::Scene* roadScene) {
     return false;
   }
 
+  windowSize = roadScene->getContentSize();
+
   camera = roadScene->getDefaultCamera();
   if (camera == nullptr) {
     return false;
@@ -201,14 +203,17 @@ void StaticElementsKeeper::setLifesCounter(const int value) {
   }
 
   lifesSprite->setSpriteFrame(kLifeWidgetSprites[value]);
+}
 
-//  Sprite* newSprite = Sprite::createWithSpriteFrameName(kLifeWidgetSprites[value]);
-//  if (lifesSprite == nullptr) {
-//    C6_W3(c6, "Failed to open ",kLifeWidgetSprites[value], " as life sprite");
-//    return false;
-//  }
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-//  newSprite->setPosition();
+void StaticElementsKeeper::setYPosition(const int yPos) {
+  gearSprite->setPosition(windowSize.width, yPos + windowSize.height/2);
+  lifesSprite->setPosition(0,yPos + windowSize.height/2);
+
+  const Vec3 currentCameraPos = camera->getPosition3D();
+  Vec3 newCameraPos = Vec3(currentCameraPos.x, yPos, currentCameraPos.z);
+  camera->setPosition3D(newCameraPos);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

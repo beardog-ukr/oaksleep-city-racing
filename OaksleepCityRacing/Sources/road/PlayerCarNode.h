@@ -4,7 +4,7 @@
 
 #include "cocos2d.h"
 
-
+#include "road/DataAdapters.h"
 
 #include "SixCatsLoggerLoggable.h"
 
@@ -16,14 +16,13 @@ class PlayerCarNode : public cocos2d::Sprite, virtual public SixCatsLoggerLoggab
 public:
   static PlayerCarNode* create(std::shared_ptr<SixCatsLogger> c6);
 
-  void setInitialY(const float value);
-  void setLanes(const float leftLaneX, const float rightLaneX);
-  void setRoadLength(const int roadLength);
+  void setRoadInfo (const RoadInfo& roadInfo);
   void setStaticElementsKeeper(StaticElementsKeeper* keeper);
 
   std::pair<float, float> doMove();
 
-  void doDie();
+  float doMoveToStart(const int windowHeight);
+
 
   bool setGearDown();// returns true if gear actually changed
   bool setGearUp();
@@ -56,7 +55,7 @@ protected:
   float initialY;
 
   int lifesCounter;
-//  void doDie();
+  void doDie();
 
   StaticElementsKeeper* staticElementsKeeper;
 };

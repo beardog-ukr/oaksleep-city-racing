@@ -48,6 +48,7 @@ list(APPEND GAME_HEADER
      Sources/AppDelegate.h
      Sources/ZOrderConstTypes.h
      Sources/ZOrderConstValues.h
+     Sources/road/DataAdapters.h
      Sources/road/EnemyCarNode.h
      Sources/road/EnemyCarsKeeper.cpp
      Sources/road/PlayerCarNode.h

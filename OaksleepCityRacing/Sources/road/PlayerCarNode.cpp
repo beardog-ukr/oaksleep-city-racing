@@ -218,6 +218,19 @@ std::pair<float, float> PlayerCarNode::doMove() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+float PlayerCarNode::doMoveToStart(const int windowHeight) {
+  const int kEffectDuration = 2;
+
+  const Size carSize = getContentSize();
+  const int bottomDistance = floor(carSize.height /10); // take 10% of car height
+  staticElementsKeeper->doMove(make_pair( windowHeight/2 - carSize.height - bottomDistance,
+                                          kEffectDuration));
+
+  return kEffectDuration;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 bool PlayerCarNode::initPhysicsBody() {
 
   PhysicsBody* physicsBody = PhysicsBody::createPolygon(redCarBodyPoints, kRedCarBodyPointsCount,
@@ -336,30 +349,23 @@ bool PlayerCarNode::setGearUp() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void PlayerCarNode::setInitialY(const float value) {
-  initialY = value;
-
-  if (currentLaneIndex>=0) {
-    setPosition(Vec2(lanes[currentLaneIndex], initialY));
-  }
-}
-
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-void PlayerCarNode::setLanes(const float leftLaneX, const float rightLaneX) {
+void PlayerCarNode::setRoadInfo(const RoadInfo& roadInfo) {
+  // --- lanes
   currentLaneIndex = 1;
-  lanes[0] = rightLaneX;
-  lanes[1] = leftLaneX;
+  lanes[0] = roadInfo.rightLaneX;
+  lanes[1] = roadInfo.leftLaneX;
 
-  if (initialY>=0) {
-    setPosition(Vec2(lanes[currentLaneIndex], initialY));
-  }
-}
+  // --- start position
+  initialY = roadInfo.startPosition;
 
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+  const Size carSize = getContentSize();
+  setPosition(Vec2(lanes[currentLaneIndex], initialY - carSize.height/2));
 
-void PlayerCarNode::setRoadLength(const int inRoadLength) {
-  roadLength = inRoadLength;
+  staticElementsKeeper->setYPosition(roadInfo.startPosition);
+
+  // --- road length
+  roadLength = roadInfo.roadLength;
+
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

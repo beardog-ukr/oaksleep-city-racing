@@ -5,6 +5,7 @@
 
 namespace oaksleep_city_racing {
 
+class RoadNode;
 class PlayerCarNode;
 class EnemyCarsKeeper;
 
@@ -19,15 +20,15 @@ protected:
   PlayerCarNode* playerCar;
 
   virtual bool init();
-  int initRoad();
-  bool initEnemyCars(const int roadLength);
-  bool initPlayerCar(const int roadLength);
+  bool initRoad();
+  bool initEnemyCars();
+  bool initPlayerCar();
   bool initKeyboardProcessing();
 
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
 
   bool alreadyMoving;
-  void startMoving();
+  void startMoving(float unusedValue);
   void doSingleMove(float dt);// here parameter is not used, but is required by CC_SCHEDULE_SELECTOR
 
   bool onContactBegin(cocos2d::PhysicsContact& contact);
@@ -35,6 +36,7 @@ protected:
   static bool loadSpriteCache(std::shared_ptr<SixCatsLogger> c6);
   static void unloadSpriteCache();
 
+  RoadNode* roadNode;
   EnemyCarsKeeper* enemyCarsKeeper;
 };
 

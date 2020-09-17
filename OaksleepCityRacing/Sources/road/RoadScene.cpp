@@ -99,16 +99,16 @@ bool RoadScene::init() {
   //else
   phw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
-  const int roadLength = initRoad();
-  if (roadLength == 0) {
+  // const int roadLength = initRoad();
+  if (!initRoad() ) {
     return false;
   }
 
-  if (!initEnemyCars(roadLength)) {
+  if (!initEnemyCars()) {
     return false;
   }
 
-  if (!initPlayerCar(roadLength)) {
+  if (!initPlayerCar()) {
     return false;
   }
 
@@ -126,14 +126,17 @@ bool RoadScene::init() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initEnemyCars(const int roadLength) {
+bool RoadScene::initEnemyCars() {
 
   enemyCarsKeeper = EnemyCarsKeeper::create(c6);
   if (enemyCarsKeeper == nullptr) {
     return false;
   }
 
-  return enemyCarsKeeper->generateCars(roadLength, this);
+  RoadInfo roadInfo;
+  roadNode->fillRoadInfo(roadInfo);
+
+  return enemyCarsKeeper->generateCars(roadInfo.roadLength, this);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -149,7 +152,7 @@ bool RoadScene::initKeyboardProcessing() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initPlayerCar(const int roadLength) {
+bool RoadScene::initPlayerCar() {
   StaticElementsKeeper* staticElementsKeeper = StaticElementsKeeper::create(this, c6);
   if (staticElementsKeeper == nullptr) {
     return false;
@@ -160,34 +163,38 @@ bool RoadScene::initPlayerCar(const int roadLength) {
     return false;
   }
 
-  const Size currentWindowSize = getContentSize();
-  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
-  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
-  playerCar->setLanes(leftLane, rightLane);
-  playerCar->setInitialY(100);
-  playerCar->setRoadLength(roadLength);
   playerCar->setStaticElementsKeeper(staticElementsKeeper);
+
+  RoadInfo roadInfo;
+  roadNode->fillRoadInfo(roadInfo);
+
+  const Size currentWindowSize = getContentSize();
+  roadInfo.leftLaneX = currentWindowSize.width/2 - currentWindowSize.width/8;
+  roadInfo.rightLaneX = currentWindowSize.width/2 + currentWindowSize.width/8;
+
+  playerCar->setRoadInfo(roadInfo);
+
   addChild(playerCar, kRoadSceneZO.playerCar);
+
+  // --- starting scene effect
+  const float effectDuration = playerCar->doMoveToStart(currentWindowSize.height);
+  schedule(CC_SCHEDULE_SELECTOR(RoadScene::startMoving), effectDuration, 0, 0);
 
   return true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-int RoadScene::initRoad() {
-  int roadLength = 0;
-
-  RoadNode* roadNode = RoadNode::create(getContentSize(), c6);
+bool RoadScene::initRoad() {
+  roadNode = RoadNode::create(getContentSize(), c6);
   if (roadNode == nullptr) {
-    return roadLength;
+    return false;
   }
 
   roadNode->setAnchorPoint(Vec2(0,0));
   addChild(roadNode, kRoadSceneZO.terrain);
 
-  roadLength = roadNode->getLength();
-
-  return roadLength;
+  return true;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -251,16 +258,10 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
     if (alreadyMoving) {
       playerCar->setGearUp();
     }
-    else {
-      startMoving();
-    }
   }
   else if (EventKeyboard::KeyCode::KEY_Z == keyCode) {
     if (alreadyMoving) {
       playerCar->setGearDown();
-    }
-    else {
-      startMoving();
     }
   }
   else if (EventKeyboard::KeyCode::KEY_LEFT_ARROW == keyCode) {
@@ -273,11 +274,6 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
       playerCar->makeTurnRight();
     }
   }
-  else if (EventKeyboard::KeyCode::KEY_K == keyCode) {
-    if (!alreadyMoving) {
-      startMoving();
-    }
-  }
   else if (EventKeyboard::KeyCode::KEY_X == keyCode) {
     c6->d(__c6_MN__, "Need to get out (debug, x pressed).");
 
@@ -288,10 +284,14 @@ void RoadScene::onKeyPressedScene(EventKeyboard::KeyCode keyCode, Event *) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void RoadScene::startMoving() {
+void RoadScene::startMoving(float) {
+  C6_D1(c6, "Here");
+
   alreadyMoving = true;
 
-  const pair<float, float> moveInfo = playerCar->doMove();
+  playerCar->doMove();
+
+  enemyCarsKeeper->startCars();
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

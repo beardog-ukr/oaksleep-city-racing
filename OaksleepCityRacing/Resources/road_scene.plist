@@ -30,7 +30,7 @@
     <key>spriteSourceSize</key>
     <string>{79,162}</string>
     <key>textureRect</key>
-    <string>{{390,383},{71,156}}</string>
+    <string>{{527,0},{71,156}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -75,7 +75,7 @@
     <key>spriteSourceSize</key>
     <string>{79,162}</string>
     <key>textureRect</key>
-    <string>{{527,0},{69,156}}</string>
+    <string>{{390,444},{69,156}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -105,7 +105,37 @@
     <key>spriteSourceSize</key>
     <string>{80,159}</string>
     <key>textureRect</key>
-    <string>{{463,383},{72,149}}</string>
+    <string>{{461,444},{72,149}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/terrain/mark_finish</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{190,59}</string>
+    <key>spriteSourceSize</key>
+    <string>{190,59}</string>
+    <key>textureRect</key>
+    <string>{{390,383},{190,59}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/terrain/mark_start</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{190,58}</string>
+    <key>spriteSourceSize</key>
+    <string>{190,58}</string>
+    <key>textureRect</key>
+    <string>{{0,563},{190,58}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -120,7 +150,7 @@
     <key>spriteSourceSize</key>
     <string>{300,223}</string>
     <key>textureRect</key>
-    <string>{{0,225},{300,223}}</string>
+    <string>{{0,0},{300,223}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -135,7 +165,7 @@
     <key>spriteSourceSize</key>
     <string>{300,223}</string>
     <key>textureRect</key>
-    <string>{{0,0},{300,223}}</string>
+    <string>{{0,225},{300,223}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -195,7 +225,7 @@
     <key>spriteSourceSize</key>
     <string>{55,55}</string>
     <key>textureRect</key>
-    <string>{{539,339},{55,55}}</string>
+    <string>{{535,444},{55,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -225,7 +255,7 @@
     <key>spriteSourceSize</key>
     <string>{55,55}</string>
     <key>textureRect</key>
-    <string>{{390,541},{55,55}}</string>
+    <string>{{535,501},{55,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -255,7 +285,7 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{0,563},{68,55}}</string>
+    <string>{{192,563},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -270,7 +300,7 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{140,563},{68,55}}</string>
+    <string>{{461,595},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -285,7 +315,7 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{210,563},{68,55}}</string>
+    <string>{{531,595},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -300,7 +330,7 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{70,563},{68,55}}</string>
+    <string>{{302,564},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -310,7 +340,7 @@
    <key>format</key>
    <integer>3</integer>
    <key>size</key>
-   <string>{598,620}</string>
+   <string>{601,652}</string>
    <key>textureFileName</key>
    <string>road_scene.png</string>
   </dict>

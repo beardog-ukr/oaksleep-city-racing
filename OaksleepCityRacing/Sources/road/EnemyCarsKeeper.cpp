@@ -86,7 +86,7 @@ bool EnemyCarsKeeper::generateCars(const int inRoadLength, cocos2d::Node* carsPa
       enemyCar->setRoadLength(roadLength);
       carsParent->addChild(enemyCar, kRoadSceneZO.enemyCar);
 
-      enemyCar->doMove();
+//      enemyCar->doMove();
       cars.push_back(enemyCar);
 
       lengthAcc += PlayerCarNode::kTurnDistance*3;
@@ -121,6 +121,14 @@ EnemyCarsKeeper* EnemyCarsKeeper::create(shared_ptr<SixCatsLogger> c6) {
 
 bool EnemyCarsKeeper::initSelf() {
   return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void EnemyCarsKeeper::startCars() {
+  for(EnemyCarNode* ecn: cars) {
+    ecn->doMove();
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

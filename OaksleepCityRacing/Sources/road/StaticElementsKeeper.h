@@ -18,6 +18,8 @@ public:
   void setLifesCounter(const int value);// expects values 0..4, lower is more dead
   void setGearIndicator(const int value); // expects 1..4, large is faster
 
+  void setYPosition(const int yPos);
+
 //  void setCamera(cocos2d::Camera* camera);
   void doMove(const std::pair<float, float> moveInfo);
   //const float moveDistance, const float timeInteval);
@@ -36,6 +38,8 @@ protected:
 
   cocos2d::Sprite* lifesSprite;
   cocos2d::Sprite* gearSprite;
+
+  cocos2d::Size windowSize;
 
   cocos2d::Camera* camera;
 };

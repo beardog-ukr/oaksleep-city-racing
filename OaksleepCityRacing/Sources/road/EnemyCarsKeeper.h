@@ -17,6 +17,7 @@ public:
   virtual ~EnemyCarsKeeper();//TODO make private
 
 //  void setRoadLength(const int roadLength);
+  void startCars();
   bool generateCars(const int roadLength, cocos2d::Node* carsParent);
 
 protected:
