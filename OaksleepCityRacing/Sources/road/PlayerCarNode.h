@@ -57,6 +57,9 @@ protected:
   int lifesCounter;
   void doDie();
 
+  int currentMoveSoundId;
+  void reevaluateMoveSound(const int soundChange);
+
   StaticElementsKeeper* staticElementsKeeper;
 };
 

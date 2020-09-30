@@ -7,6 +7,8 @@ using namespace oaksleep_city_racing;
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
 
+#include "AudioEngine.h"
+
 USING_NS_CC;
 using namespace std;
 
@@ -16,6 +18,7 @@ static const int kGearMax = 4;
 static const int kLineMax = 2;
 
 static const int kMoveActionTag = 222;
+static const int kMoveSoundActionTag = 223;
 
 static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
@@ -29,14 +32,14 @@ static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
   {.x = -14, .y = -78     },
   {.x =  30, .y = -67     },
   {.x = -29, .y = -67     },
-  {.x =  32, .y =          -43     },
-  {.x = -32, .y =          -43     },
-  {.x =  36, .y =          51      },
-  {.x = -36, .y =          51      },
-  {.x =  28, .y =          69      },
-  {.x = -29, .y =          69      },
-  {.x =  18, .y =          77      },
-  {.x = -16, .y =          77      },
+  {.x =  32, .y = -43     },
+  {.x = -32, .y = -43     },
+  {.x =  36, .y =  51      },
+  {.x = -36, .y =  51      },
+  {.x =  28, .y =  69      },
+  {.x = -29, .y =  69      },
+  {.x =  18, .y =  77      },
+  {.x = -16, .y =  77      },
 };
 
 static const int kPlayerCarCategoryBitmask = 0x01;
@@ -45,6 +48,23 @@ static const int kEnemyCarCategoryBitmask = 0x02;
 const int PlayerCarNode::kTag = 20;
 
 const int kLifesMax = 5;
+
+enum GearSwitchType : int {
+  kGearRemainsSame = 1,
+  kGearGetsDown = 2,
+  kGearGetsUp = 3
+};
+static const int kGearSoundTh = 2;
+
+static const string kEngineSoundSlowFN = "sounds/engine_slow.mp3";
+static const float kEngineSoundSlowDuration = 2.37;
+static const string kEngineSoundFastFN = "sounds/engine_fast.mp3";
+static const float kEngineSoundFastDuration = 2.44;
+static const string kEngineSoundStartFN = "sounds/engine_start.mp3";
+
+static const int kCrashSoundsMaxId = 2;
+static const string kCrashSounds[kCrashSoundsMaxId] = {
+  "sounds/car_crash_01.mp3", "sounds/car_crash_02.mp3"};
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -59,12 +79,18 @@ PlayerCarNode::PlayerCarNode() {
   staticElementsKeeper = nullptr;
 
   lifesCounter = kLifesMax-1;
+
+  currentMoveSoundId = 0;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 PlayerCarNode::~PlayerCarNode() {
   delete staticElementsKeeper;
+
+  if (currentMoveSoundId!=0) {
+    AudioEngine::stop(currentMoveSoundId);
+  }
 
   C6_F1(c6, "here");
 }
@@ -204,8 +230,10 @@ std::pair<float, float> PlayerCarNode::doMove() {
   seq->setTag(kMoveActionTag);
   runAction(seq);
 
+  // --- sound
+  reevaluateMoveSound(kGearRemainsSame);
 
-// --- prepare move info
+  // --- prepare move info
   std::pair<float, float> result;
   result.first = path;
   result.second = time;
@@ -226,6 +254,20 @@ float PlayerCarNode::doMoveToStart(const int windowHeight) {
   staticElementsKeeper->doMove(make_pair( windowHeight/2 - carSize.height - bottomDistance,
                                           kEffectDuration));
 
+  //--- add starting sound
+  int startingSoundId = AudioEngine::play2d(kEngineSoundStartFN);
+  C6_D2(c6, "Started sound effect as ", startingSoundId);
+  if (startingSoundId == AudioEngine::INVALID_AUDIO_ID) {
+    C6_D1(c6, "audio id invalid");
+  }
+
+  CallFunc* cf = CallFunc::create([startingSoundId]() {
+    AudioEngine::stop(startingSoundId);
+  });
+  Sequence* seq = Sequence::create(DelayTime::create(kEffectDuration), cf, nullptr);
+  runAction(seq);
+
+  //--- finally
   return kEffectDuration;
 }
 
@@ -303,6 +345,12 @@ bool PlayerCarNode::makeTurnRight() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void PlayerCarNode::reactToEnemyContact() {
+  const int csfnid = RandomHelper::random_int((int)0, kCrashSoundsMaxId-1);
+  int startingSoundId = AudioEngine::play2d(kCrashSounds[csfnid]);
+  if (startingSoundId == AudioEngine::INVALID_AUDIO_ID) {
+    C6_D2(c6, "audio id invalid, started ", kCrashSounds[csfnid] );
+  }
+
   lifesCounter--;
   staticElementsKeeper->setLifesCounter(lifesCounter);
   if (lifesCounter == 0) {
@@ -316,7 +364,72 @@ void PlayerCarNode::reactToEnemyContact() {
   }
 
   currentGear = 1;
+  reevaluateMoveSound(kGearGetsDown);
   doMove();
+  staticElementsKeeper->setGearIndicator(currentGear);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+void PlayerCarNode::reevaluateMoveSound(const int soundChange) {
+  string soundFileName;
+  float soundDuration;
+  bool stopPrevious = false;
+  switch (soundChange) {
+  case kGearRemainsSame: {
+    if (currentGear<=2) {
+      soundFileName = kEngineSoundSlowFN;
+      soundDuration = kEngineSoundSlowDuration;
+    }
+    else {
+      soundFileName = kEngineSoundFastFN;
+      soundDuration = kEngineSoundFastDuration;
+    }
+    break;
+  }
+
+  case kGearGetsDown: {
+    soundFileName = kEngineSoundSlowFN;
+    soundDuration = kEngineSoundSlowDuration;
+    stopPrevious = true;
+    break;
+  }
+
+  case kGearGetsUp: {
+    soundFileName = kEngineSoundFastFN;
+    soundDuration = kEngineSoundFastDuration;
+    stopPrevious = true;
+    break;
+  }
+
+  default:
+    C6_D1(c6, "ERROR: unexpected value of soundChange");
+    soundFileName = kEngineSoundSlowFN;
+    soundDuration = kEngineSoundSlowDuration;
+  }
+
+  if (stopPrevious) {
+    AudioEngine::stop(currentMoveSoundId);
+    currentMoveSoundId = 0;
+    stopAllActionsByTag(kMoveSoundActionTag);
+  }
+
+  //--- add starting sound
+  if (currentMoveSoundId == 0) {
+    CallFunc* cf = CallFunc::create([this, soundFileName]() {
+      this->currentMoveSoundId = AudioEngine::play2d(soundFileName);
+      //    C6_D2(c6, "Started sound effect as ", startingSoundId);
+      if (this->currentMoveSoundId == AudioEngine::INVALID_AUDIO_ID) {
+        C6_D2(c6, "audio id invalid for ", soundFileName);
+        //        break;
+      }
+    });
+
+    Sequence* seq = Sequence::create(cf, DelayTime::create(soundDuration), nullptr);
+    RepeatForever* rf = RepeatForever::create(seq);
+    rf->setTag(kMoveSoundActionTag);
+    runAction(rf);
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -324,6 +437,10 @@ void PlayerCarNode::reactToEnemyContact() {
 bool PlayerCarNode::setGearDown() {
   if (currentGear == 1) {
     return false;
+  }
+
+  if (currentGear == (kGearSoundTh+1)) {
+    reevaluateMoveSound(kGearGetsDown);
   }
 
   currentGear = currentGear -1;
@@ -338,6 +455,10 @@ bool PlayerCarNode::setGearDown() {
 bool PlayerCarNode::setGearUp() {
   if (currentGear == kGearMax) {
     return false;
+  }
+
+  if (currentGear == (kGearSoundTh)) {
+    reevaluateMoveSound(kGearGetsUp);
   }
 
   currentGear = currentGear +1;
