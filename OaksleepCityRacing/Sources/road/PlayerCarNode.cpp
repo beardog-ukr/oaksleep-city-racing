@@ -48,6 +48,9 @@ static const int kEnemyCarCategoryBitmask = 0x02;
 const int PlayerCarNode::kTag = 20;
 
 const int kLifesMax = 5;
+static const string kBodyImageFN[kLifesMax] = {
+  "ocr_game/cars/red_car_1", "ocr_game/cars/red_car_2","ocr_game/cars/red_car_3",
+  "ocr_game/cars/red_car_4", "ocr_game/cars/red_car_5"};
 
 enum GearSwitchType : int {
   kGearRemainsSame = 1,
@@ -353,6 +356,24 @@ void PlayerCarNode::reactToEnemyContact() {
 
   lifesCounter--;
   staticElementsKeeper->setLifesCounter(lifesCounter);
+
+  // --- change body image
+  do {
+    SpriteFrameCache* sfc =  SpriteFrameCache::getInstance();
+    if (sfc == nullptr) {
+      break;
+    }
+
+    SpriteFrame* bodySF = sfc->getSpriteFrameByName(kBodyImageFN[lifesCounter]);
+    if (bodySF == nullptr) {
+      C6_D2(c6, "failed to get body sprite ", kBodyImageFN[lifesCounter]);
+      break;
+    }
+
+    setSpriteFrame(bodySF);
+  } while (false);
+
+  // ---
   if (lifesCounter == 0) {
     doDie();
     return;
