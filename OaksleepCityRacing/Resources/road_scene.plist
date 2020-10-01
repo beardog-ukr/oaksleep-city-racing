@@ -4,247 +4,202 @@
  <dict>
   <key>frames</key>
   <dict>
-   <key>ocr_game/cars/police_car</key>
-   <dict>
-    <key>aliases</key>
-    <array/>
-    <key>spriteOffset</key>
-    <string>{0,1}</string>
-    <key>spriteSize</key>
-    <string>{86,179}</string>
-    <key>spriteSourceSize</key>
-    <string>{90,191}</string>
-    <key>textureRect</key>
-    <string>{{302,225},{86,179}}</string>
-    <key>textureRotated</key>
-    <false/>
-   </dict>
-   <key>ocr_game/cars/red_car_1</key>
+   <key>ocr/cars/red_car_1</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{1,1}</string>
     <key>spriteSize</key>
-    <string>{71,156}</string>
+    <string>{134,291}</string>
     <key>spriteSourceSize</key>
-    <string>{79,162}</string>
+    <string>{150,304}</string>
     <key>textureRect</key>
-    <string>{{527,0},{71,156}}</string>
+    <string>{{944,888},{134,291}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/cars/red_car_2</key>
+   <key>ocr/cars/red_car_2</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
-    <string>{1,1}</string>
+    <string>{2,1}</string>
     <key>spriteSize</key>
-    <string>{73,156}</string>
+    <string>{138,291}</string>
     <key>spriteSourceSize</key>
-    <string>{79,162}</string>
+    <string>{150,304}</string>
     <key>textureRect</key>
-    <string>{{302,406},{73,156}}</string>
+    <string>{{1028,0},{138,291}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/cars/red_car_3</key>
+   <key>ocr/cars/red_car_3</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
-    <string>{1,1}</string>
+    <string>{3,1}</string>
     <key>spriteSize</key>
-    <string>{73,156}</string>
+    <string>{136,291}</string>
     <key>spriteSourceSize</key>
-    <string>{79,162}</string>
+    <string>{150,304}</string>
     <key>textureRect</key>
-    <string>{{390,225},{73,156}}</string>
+    <string>{{1028,293},{136,291}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/cars/red_car_4</key>
-   <dict>
-    <key>aliases</key>
-    <array/>
-    <key>spriteOffset</key>
-    <string>{0,1}</string>
-    <key>spriteSize</key>
-    <string>{69,156}</string>
-    <key>spriteSourceSize</key>
-    <string>{79,162}</string>
-    <key>textureRect</key>
-    <string>{{390,444},{69,156}}</string>
-    <key>textureRotated</key>
-    <false/>
-   </dict>
-   <key>ocr_game/cars/red_car_5</key>
+   <key>ocr/cars/red_car_4</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,1}</string>
     <key>spriteSize</key>
-    <string>{72,155}</string>
+    <string>{132,292}</string>
     <key>spriteSourceSize</key>
-    <string>{80,162}</string>
+    <string>{150,304}</string>
     <key>textureRect</key>
-    <string>{{465,225},{72,155}}</string>
+    <string>{{1166,293},{132,292}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/cars/yellow_car</key>
+   <key>ocr/cars/red_car_5</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,2}</string>
+    <key>spriteSize</key>
+    <string>{136,290}</string>
+    <key>spriteSourceSize</key>
+    <string>{150,304}</string>
+    <key>textureRect</key>
+    <string>{{1028,586},{136,290}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr/cars/yellow_car</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,1}</string>
+    <key>spriteSize</key>
+    <string>{136,278}</string>
+    <key>spriteSourceSize</key>
+    <string>{150,298}</string>
+    <key>textureRect</key>
+    <string>{{1080,888},{136,278}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr/road/mark_finish</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{72,149}</string>
+    <string>{440,136}</string>
     <key>spriteSourceSize</key>
-    <string>{80,159}</string>
+    <string>{440,136}</string>
     <key>textureRect</key>
-    <string>{{461,444},{72,149}}</string>
+    <string>{{502,888},{440,136}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/mark_finish</key>
+   <key>ocr/road/mark_start</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{190,59}</string>
+    <string>{440,136}</string>
     <key>spriteSourceSize</key>
-    <string>{190,59}</string>
+    <string>{440,136}</string>
     <key>textureRect</key>
-    <string>{{390,383},{190,59}}</string>
+    <string>{{502,1026},{440,136}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/mark_start</key>
+   <key>ocr/road/tile_00</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{190,58}</string>
+    <string>{500,372}</string>
     <key>spriteSourceSize</key>
-    <string>{190,58}</string>
+    <string>{500,372}</string>
     <key>textureRect</key>
-    <string>{{0,563},{190,58}}</string>
+    <string>{{0,514},{500,372}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/road_tile_01</key>
+   <key>ocr/road/tile_01</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{300,223}</string>
+    <string>{500,372}</string>
     <key>spriteSourceSize</key>
-    <string>{300,223}</string>
+    <string>{500,372}</string>
     <key>textureRect</key>
-    <string>{{0,0},{300,223}}</string>
+    <string>{{502,514},{500,372}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/road_tile_02</key>
+   <key>ocr/road/tile_02</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{300,223}</string>
+    <string>{500,186}</string>
     <key>spriteSourceSize</key>
-    <string>{300,223}</string>
+    <string>{500,186}</string>
     <key>textureRect</key>
-    <string>{{0,225},{300,223}}</string>
+    <string>{{0,888},{500,186}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/road_tile_03</key>
+   <key>ocr/terrain/grass</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{300,111}</string>
+    <string>{512,512}</string>
     <key>spriteSourceSize</key>
-    <string>{300,111}</string>
+    <string>{512,512}</string>
     <key>textureRect</key>
-    <string>{{0,450},{300,111}}</string>
+    <string>{{514,0},{512,512}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/terrain/soil_tile</key>
+   <key>ocr/terrain/soil</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{223,223}</string>
+    <string>{512,512}</string>
     <key>spriteSourceSize</key>
-    <string>{223,223}</string>
+    <string>{512,512}</string>
     <key>textureRect</key>
-    <string>{{302,0},{223,223}}</string>
+    <string>{{0,0},{512,512}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/gear_1</key>
-   <dict>
-    <key>aliases</key>
-    <array/>
-    <key>spriteOffset</key>
-    <string>{0,0}</string>
-    <key>spriteSize</key>
-    <string>{55,55}</string>
-    <key>spriteSourceSize</key>
-    <string>{55,55}</string>
-    <key>textureRect</key>
-    <string>{{539,225},{55,55}}</string>
-    <key>textureRotated</key>
-    <false/>
-   </dict>
-   <key>ocr_game/ui_road/gear_2</key>
-   <dict>
-    <key>aliases</key>
-    <array/>
-    <key>spriteOffset</key>
-    <string>{0,0}</string>
-    <key>spriteSize</key>
-    <string>{55,55}</string>
-    <key>spriteSourceSize</key>
-    <string>{55,55}</string>
-    <key>textureRect</key>
-    <string>{{535,444},{55,55}}</string>
-    <key>textureRotated</key>
-    <false/>
-   </dict>
-   <key>ocr_game/ui_road/gear_3</key>
-   <dict>
-    <key>aliases</key>
-    <array/>
-    <key>spriteOffset</key>
-    <string>{0,0}</string>
-    <key>spriteSize</key>
-    <string>{55,55}</string>
-    <key>spriteSourceSize</key>
-    <string>{55,55}</string>
-    <key>textureRect</key>
-    <string>{{539,282},{55,55}}</string>
-    <key>textureRotated</key>
-    <false/>
-   </dict>
-   <key>ocr_game/ui_road/gear_4</key>
+   <key>ocr/ui_road/gear_1</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -255,11 +210,56 @@
     <key>spriteSourceSize</key>
     <string>{55,55}</string>
     <key>textureRect</key>
-    <string>{{535,501},{55,55}}</string>
+    <string>{{350,1076},{55,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_0</key>
+   <key>ocr/ui_road/gear_2</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{1168,0},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr/ui_road/gear_3</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{407,1076},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr/ui_road/gear_4</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{55,55}</string>
+    <key>spriteSourceSize</key>
+    <string>{55,55}</string>
+    <key>textureRect</key>
+    <string>{{1168,57},{55,55}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr/ui_road/hp_0</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -270,11 +270,11 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{527,158},{68,55}}</string>
+    <string>{{0,1076},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_1</key>
+   <key>ocr/ui_road/hp_1</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -285,11 +285,11 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{192,563},{68,55}}</string>
+    <string>{{70,1076},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_2</key>
+   <key>ocr/ui_road/hp_2</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -300,11 +300,11 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{461,595},{68,55}}</string>
+    <string>{{210,1076},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_3</key>
+   <key>ocr/ui_road/hp_3</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -315,11 +315,11 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{531,595},{68,55}}</string>
+    <string>{{280,1076},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
-   <key>ocr_game/ui_road/hp_4</key>
+   <key>ocr/ui_road/hp_4</key>
    <dict>
     <key>aliases</key>
     <array/>
@@ -330,7 +330,7 @@
     <key>spriteSourceSize</key>
     <string>{68,55}</string>
     <key>textureRect</key>
-    <string>{{302,564},{68,55}}</string>
+    <string>{{140,1076},{68,55}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -340,7 +340,7 @@
    <key>format</key>
    <integer>3</integer>
    <key>size</key>
-   <string>{601,652}</string>
+   <string>{1300,1181}</string>
    <key>textureFileName</key>
    <string>road_scene.png</string>
   </dict>

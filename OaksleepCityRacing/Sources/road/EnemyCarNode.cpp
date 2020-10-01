@@ -17,7 +17,7 @@ static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
 static const int kTurnDistance = 200;
 
-static const string kYellowCarFrameName = "ocr_game/cars/yellow_car";
+static const string kYellowCarFrameName = "ocr/cars/yellow_car";
 
 static const int kYellowCarBodyPointsCount = 8;
 static const Vec2 yellowCarBodyPoints[kYellowCarBodyPointsCount] = {

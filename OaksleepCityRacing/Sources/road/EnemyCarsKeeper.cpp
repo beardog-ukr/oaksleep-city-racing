@@ -37,28 +37,30 @@ EnemyCarsKeeper::~EnemyCarsKeeper() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool EnemyCarsKeeper::generateCars(const int inRoadLength, cocos2d::Node* carsParent) {
-  roadLength = inRoadLength;
+bool EnemyCarsKeeper::generateCars(const RoadInfo &roadInfo, cocos2d::Node* carsParent) {
+//  roadLength = roadInfo;
 
   const Size currentWindowSize = carsParent->getContentSize();
 
-  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
-  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
+//  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
+//  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
 
   int lengthAcc = 0;//PlayerCarNode::kTurnDistance*3;
   bool needEmptyZone = true;
   int previousLaneId;
 
-  while (lengthAcc < roadLength) {
+  const float emptyZoneLength = roadInfo.turnDistance*2;
+
+  while (lengthAcc < roadInfo.roadLength) {
     if (needEmptyZone) {
-      lengthAcc += PlayerCarNode::kTurnDistance*3;
+      lengthAcc += emptyZoneLength;
     }
 
     int rv = getRandomECKValue();
 
     if (rv<40) {
       // add empty section on the road
-      lengthAcc += PlayerCarNode::kTurnDistance*3;
+      lengthAcc += emptyZoneLength; // PlayerCarNode::kTurnDistance*3;
       needEmptyZone = false;
       previousLaneId = -1; // -1 is value for "empty zone"
     }
@@ -68,7 +70,7 @@ bool EnemyCarsKeeper::generateCars(const int inRoadLength, cocos2d::Node* carsPa
         return false;
       }
 
-      enemyCar->setLanes(leftLane, rightLane);
+      enemyCar->setLanes(roadInfo.leftLaneX, roadInfo.rightLaneX);
 
       int initialLane = 0;
       if (rv>80) {
@@ -78,18 +80,18 @@ bool EnemyCarsKeeper::generateCars(const int inRoadLength, cocos2d::Node* carsPa
       if ( ((previousLaneId == 0) && (initialLane == 1)) ||
            ((previousLaneId == 1) && (initialLane == 0)) ) {
         // add one empty section
-        lengthAcc += PlayerCarNode::kTurnDistance*3;
+        lengthAcc += emptyZoneLength;
       }
 
       enemyCar->setInitialPos(initialLane, lengthAcc);
 
-      enemyCar->setRoadLength(roadLength);
+      enemyCar->setRoadLength(roadInfo.enemyFinishPoint);
       carsParent->addChild(enemyCar, kRoadSceneZO.enemyCar);
 
 //      enemyCar->doMove();
       cars.push_back(enemyCar);
 
-      lengthAcc += PlayerCarNode::kTurnDistance*3;
+      lengthAcc += emptyZoneLength;
     }
   }
 

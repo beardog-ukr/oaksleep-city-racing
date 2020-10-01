@@ -3,6 +3,8 @@
 #include "cocos2d.h"
 #include "SixCatsLoggerLoggable.h"
 
+#include "road/DataAdapters.h"
+
 namespace oaksleep_city_racing {
 
 class RoadNode;
@@ -21,8 +23,8 @@ protected:
 
   virtual bool init();
   bool initRoad();
-  bool initEnemyCars();
-  bool initPlayerCar();
+  bool initEnemyCars(const RoadInfo& roadInfo);
+  bool initPlayerCar(const RoadInfo &roadInfo);
   bool initKeyboardProcessing();
 
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);

@@ -6,6 +6,8 @@
 
 #include "SixCatsLoggerLoggable.h"
 
+#include "road/DataAdapters.h"
+
 namespace oaksleep_city_racing {
 
 class EnemyCarNode;
@@ -18,7 +20,7 @@ public:
 
 //  void setRoadLength(const int roadLength);
   void startCars();
-  bool generateCars(const int roadLength, cocos2d::Node* carsParent);
+  bool generateCars(const RoadInfo& roadInfo, cocos2d::Node* carsParent);
 
 protected:
 

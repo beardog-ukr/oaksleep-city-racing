@@ -99,16 +99,18 @@ bool RoadScene::init() {
   //else
   phw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
-  // const int roadLength = initRoad();
   if (!initRoad() ) {
     return false;
   }
 
-  if (!initEnemyCars()) {
+  RoadInfo roadInfo;
+  roadNode->fillRoadInfo(roadInfo);
+
+  if (!initEnemyCars(roadInfo)) {
     return false;
   }
 
-  if (!initPlayerCar()) {
+  if (!initPlayerCar(roadInfo)) {
     return false;
   }
 
@@ -126,19 +128,19 @@ bool RoadScene::init() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initEnemyCars() {
+bool RoadScene::initEnemyCars(const RoadInfo& roadInfo) {
 
   enemyCarsKeeper = EnemyCarsKeeper::create(c6);
   if (enemyCarsKeeper == nullptr) {
     return false;
   }
 
-  RoadInfo roadInfo;
-  roadNode->fillRoadInfo(roadInfo);
+//  RoadInfo roadInfo;
+//  roadNode->fillRoadInfo(roadInfo);
 
-  roadInfo.roadLength += getContentSize().height; // to ensule enemy cars go behind sceeen
+//  roadInfo.roadLength += getContentSize().height; // to ensule enemy cars go behind sceeen
 
-  return enemyCarsKeeper->generateCars(roadInfo.roadLength, this);
+  return enemyCarsKeeper->generateCars(roadInfo, this);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -154,7 +156,7 @@ bool RoadScene::initKeyboardProcessing() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool RoadScene::initPlayerCar() {
+bool RoadScene::initPlayerCar(const RoadInfo& roadInfo) {
   StaticElementsKeeper* staticElementsKeeper = StaticElementsKeeper::create(this, c6);
   if (staticElementsKeeper == nullptr) {
     return false;
@@ -167,12 +169,12 @@ bool RoadScene::initPlayerCar() {
 
   playerCar->setStaticElementsKeeper(staticElementsKeeper);
 
-  RoadInfo roadInfo;
-  roadNode->fillRoadInfo(roadInfo);
+//  RoadInfo roadInfo;
+//  roadNode->fillRoadInfo(roadInfo);
 
   const Size currentWindowSize = getContentSize();
-  roadInfo.leftLaneX = currentWindowSize.width/2 - currentWindowSize.width/8;
-  roadInfo.rightLaneX = currentWindowSize.width/2 + currentWindowSize.width/8;
+//  roadInfo.leftLaneX = currentWindowSize.width/2 - currentWindowSize.width/8;
+//  roadInfo.rightLaneX = currentWindowSize.width/2 + currentWindowSize.width/8;
 
   playerCar->setRoadInfo(roadInfo);
 

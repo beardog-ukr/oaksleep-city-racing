@@ -1,6 +1,7 @@
 #include "RoadNode.h"
 using namespace oaksleep_city_racing;
 
+#include "PlayerCarNode.h"
 #include "ZOrderConstTypes.h"
 #include "ZOrderConstValues.h"
 
@@ -19,12 +20,13 @@ static const struct {
   string startMark;
   string terrain;
 } kSpriteFileNames = {
-  .finishMark = "ocr_game/terrain/mark_finish",
-  .road01 = "ocr_game/terrain/road_tile_01",
-  .road02 = "ocr_game/terrain/road_tile_02",
-  .road03 = "ocr_game/terrain/road_tile_03",
-  .startMark = "ocr_game/terrain/mark_start",
-  .terrain = "ocr_game/terrain/soil_tile"
+  .finishMark = "ocr/road/mark_finish",
+  .road01 = "ocr/road/tile_00",
+  .road02 = "ocr/road/tile_01",
+  .road03 = "ocr/road/tile_02",
+  // .road03 = "ocr_game/terrain/road_tile_03",
+  .startMark = "ocr/road/mark_start",
+  .terrain = "ocr/terrain/soil"
 };
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -66,6 +68,11 @@ RoadNode* RoadNode::create(const cocos2d::Size& inWindowSize, shared_ptr<SixCats
 void RoadNode::fillRoadInfo(RoadInfo& roadInfo) {
   roadInfo.roadLength = racingLength;
   roadInfo.startPosition = startPosition;
+  roadInfo.enemyFinishPoint = racingLength + windowSize.height;
+
+  if (!PlayerCarNode::fillRoadInfo(roadInfo, windowSize)) {
+    C6_D1(c6, "failed to load probe sprite from frame name ");
+  }
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

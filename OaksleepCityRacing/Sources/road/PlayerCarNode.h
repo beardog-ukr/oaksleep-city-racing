@@ -16,7 +16,7 @@ class PlayerCarNode : public cocos2d::Sprite, virtual public SixCatsLoggerLoggab
 public:
   static PlayerCarNode* create(std::shared_ptr<SixCatsLogger> c6);
 
-  void setRoadInfo (const RoadInfo& roadInfo);
+  void setRoadInfo(const RoadInfo& roadInfo);
   void setStaticElementsKeeper(StaticElementsKeeper* keeper);
 
   std::pair<float, float> doMove();
@@ -34,7 +34,9 @@ public:
   void reactToEnemyContact();
 
   static const int kTag;
-  static const int kTurnDistance;
+//  static const int kTurnDistance;
+
+  static bool fillRoadInfo(RoadInfo& roadInfo, const cocos2d::Size sceneSize);
 
 protected:
   PlayerCarNode();
@@ -51,6 +53,7 @@ protected:
   int currentGear;
 
   int roadLength;
+  float turnDistance;
 
   float initialY;
 

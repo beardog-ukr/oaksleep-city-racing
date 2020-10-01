@@ -12,7 +12,10 @@ public:
 
   float startPosition;
 
+  float turnDistance; // a distance the car travels during lane changing
+
   float roadLength;
+  float enemyFinishPoint;
 };
 
 }

@@ -13,18 +13,17 @@ using namespace std;
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 static const int kMoveActionTag = 22;
-//static const string kLifesSpriteFrameName = "ocr_game/ui_road/hp_full";
 
 static const int kLifeWidgetMax = 5;
 static const string kLifeWidgetSprites[kLifeWidgetMax] = {
-  "ocr_game/ui_road/hp_0", "ocr_game/ui_road/hp_1", "ocr_game/ui_road/hp_2",
-  "ocr_game/ui_road/hp_3", "ocr_game/ui_road/hp_4"
+  "ocr/ui_road/hp_0", "ocr/ui_road/hp_1", "ocr/ui_road/hp_2",
+  "ocr/ui_road/hp_3", "ocr/ui_road/hp_4"
 };
 
 static const int kGearIndicatorMax = 4;
 static const string kGearIndicatorSprites[kGearIndicatorMax] = {
-  "ocr_game/ui_road/gear_1", "ocr_game/ui_road/gear_2",
-  "ocr_game/ui_road/gear_3", "ocr_game/ui_road/gear_4",
+  "ocr/ui_road/gear_1", "ocr/ui_road/gear_2",
+  "ocr/ui_road/gear_3", "ocr/ui_road/gear_4",
 };
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

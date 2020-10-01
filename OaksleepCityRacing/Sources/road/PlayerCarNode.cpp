@@ -22,9 +22,7 @@ static const int kMoveSoundActionTag = 223;
 
 static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
-const int PlayerCarNode::kTurnDistance = 200;
-
-static const string kRedCarFrameName = "ocr_game/cars/red_car_5";
+//const int PlayerCarNode::kTurnDistance = 200;
 
 static const int kRedCarBodyPointsCount = 12;
 static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
@@ -49,8 +47,8 @@ const int PlayerCarNode::kTag = 20;
 
 const int kLifesMax = 5;
 static const string kBodyImageFN[kLifesMax] = {
-  "ocr_game/cars/red_car_1", "ocr_game/cars/red_car_2","ocr_game/cars/red_car_3",
-  "ocr_game/cars/red_car_4", "ocr_game/cars/red_car_5"};
+  "ocr/cars/red_car_1", "ocr/cars/red_car_2","ocr/cars/red_car_3",
+  "ocr/cars/red_car_4", "ocr/cars/red_car_5"};
 
 enum GearSwitchType : int {
   kGearRemainsSame = 1,
@@ -125,12 +123,12 @@ void PlayerCarNode::doChangeLane() {
   Vec2 currentPos = getPosition();
 //    float path = roadLength - currentPos.y;
   float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
-  float time = kTurnDistance / velocity;
-  C6_D4(c6, "Here path = ", kTurnDistance, " time = ", time);
+  float time = turnDistance / velocity;
+  C6_D4(c6, "Here path = ", turnDistance, " time = ", time);
 
   Vec2 newPos;
   newPos.x = lanes[currentLaneIndex];
-  newPos.y = currentPos.y + kTurnDistance;
+  newPos.y = currentPos.y + turnDistance;
 
   MoveTo* mt = MoveTo::create(time, newPos);
 
@@ -143,7 +141,7 @@ void PlayerCarNode::doChangeLane() {
   seq->setTag(kMoveActionTag);
 
   // --- reset camera movement
-  const pair<float, float> moveParameters = make_pair(kTurnDistance, time);
+  const pair<float, float> moveParameters = make_pair(turnDistance, time);
   staticElementsKeeper->doMove(moveParameters);
 
   laneChangeInProgress = true;
@@ -160,7 +158,7 @@ void PlayerCarNode::doDie() {
 
   // --- last move action
   Vec2 currentPos = getPosition();
-  float path = kTurnDistance;
+  float path = turnDistance;
   float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
   float time = path / velocity;
   C6_T4(c6, "Here path = ", path, " time = ", time);
@@ -276,6 +274,27 @@ float PlayerCarNode::doMoveToStart(const int windowHeight) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+bool PlayerCarNode::fillRoadInfo(RoadInfo& roadInfo, const cocos2d::Size sceneSize) {
+  Sprite* carSprite = Sprite::createWithSpriteFrameName(kBodyImageFN[kLifesMax-1]);
+  if (carSprite == nullptr) {
+    //below is emergency setup, not how is really supposed to work
+    roadInfo.leftLaneX = sceneSize.width/2 - sceneSize.width/8;
+    roadInfo.rightLaneX = sceneSize.width/2 + sceneSize.width/8;
+    roadInfo.turnDistance = sceneSize.height/3;
+    return false;
+  }
+
+  float laneStep = carSprite->getContentSize().width* (0.5 + 0.05);// half of the car width + 5%
+  roadInfo.leftLaneX = sceneSize.width/2 - laneStep;
+  roadInfo.rightLaneX = sceneSize.width/2 + laneStep;
+
+  roadInfo.turnDistance = carSprite->getContentSize().height * 1.5; // car height +50%
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 bool PlayerCarNode::initPhysicsBody() {
 
   PhysicsBody* physicsBody = PhysicsBody::createPolygon(redCarBodyPoints, kRedCarBodyPointsCount,
@@ -298,10 +317,11 @@ bool PlayerCarNode::initPhysicsBody() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool PlayerCarNode::initSelf() {
-  if (!initWithSpriteFrameName(kRedCarFrameName)) {
-    C6_C2(c6, "Failed to init with file ", kRedCarFrameName);
-    return false;    //
+  if (!initWithSpriteFrameName(kBodyImageFN[kLifesMax-1])) {
+    C6_C2(c6, "Failed to init with file ", kBodyImageFN[kLifesMax-1]);
+    return false;  //
   }
+
 
 //  setOpacity(50);
   setTag(kTag);
@@ -508,6 +528,7 @@ void PlayerCarNode::setRoadInfo(const RoadInfo& roadInfo) {
   // --- road length
   roadLength = roadInfo.roadLength;
 
+  turnDistance = roadInfo.turnDistance;
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -516,7 +537,6 @@ void PlayerCarNode::setStaticElementsKeeper(StaticElementsKeeper* keeper) {
   staticElementsKeeper = keeper;
   staticElementsKeeper->setLifesCounter(lifesCounter);
 }
-
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 

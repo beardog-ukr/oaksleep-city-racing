@@ -16,7 +16,7 @@ using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(360, 640);
+static cocos2d::Size designResolutionSize = cocos2d::Size(768, 1024);
 
 AppDelegate::AppDelegate() {
   //Logging level for the application is set here in next line
@@ -74,8 +74,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
   register_all_packages();
 
   // create a scene. it's an autorelease object
-//  Scene* scene = oaksleep_city_racing::RoadScene::createScene(c6);
-  Scene* scene = oaksleep_city_racing::MainMenuScene::createScene(c6);
+  Scene* scene = oaksleep_city_racing::RoadScene::createScene(c6);
+//  Scene* scene = oaksleep_city_racing::MainMenuScene::createScene(c6);
 //  Scene* scene = oaksleep_city_racing::GameEndScene::createScene(false, c6);
   if (scene == nullptr) {
     C6_C1(c6, "Failed to create a scene.");
