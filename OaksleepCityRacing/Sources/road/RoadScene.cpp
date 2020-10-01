@@ -36,7 +36,7 @@ static const struct {
 };
 
 static const int kElementsOpacity = 255; //must be 255 in release mode; this value is used
-                                         //during physics world deburring
+                                         //during physics world debugging
 
 static const string kPlistFileName = "road_scene.plist";
 
@@ -181,6 +181,9 @@ bool RoadScene::initPlayerCar() {
   // --- starting scene effect
   const float effectDuration = playerCar->doMoveToStart(currentWindowSize.height);
   schedule(CC_SCHEDULE_SELECTOR(RoadScene::startMoving), effectDuration, 0, 0);
+
+
+
 
   return true;
 }

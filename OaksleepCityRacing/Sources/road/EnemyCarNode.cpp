@@ -78,7 +78,7 @@ std::pair<float, float> EnemyCarNode::doMove() {
   float path = roadLength - currentPos.y;
   float velocity = (kSingleMoveDistance * currentGear )/ kSingleMoveInterval;
   float time = path / velocity;
-  C6_D4(c6, "Here path = ", path, " time = ", time);
+  C6_T4(c6, "Here path = ", path, " time = ", time);
 
   Vec2 newPos;
   newPos.x = lanes[currentLaneIndex];
