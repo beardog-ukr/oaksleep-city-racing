@@ -14,6 +14,8 @@ public:
 
   float turnDistance; // a distance the car travels during lane changing
 
+  float screenScaleFactor;
+
   float roadLength;
   float enemyFinishPoint;
 };

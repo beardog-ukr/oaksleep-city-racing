@@ -1,6 +1,9 @@
 #include "EnemyCarNode.h"
 using namespace oaksleep_city_racing;
 
+#include "ZOrderConstTypes.h"
+#include "ZOrderConstValues.h"
+
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
 #include <sstream>
@@ -18,18 +21,6 @@ static const float kSingleMoveInterval = 2.0;
 static const int kTurnDistance = 200;
 
 static const string kYellowCarFrameName = "ocr/cars/yellow_car";
-
-static const int kYellowCarBodyPointsCount = 8;
-static const Vec2 yellowCarBodyPoints[kYellowCarBodyPointsCount] = {
-  {.x =       15, .y =          -74.5   },
-  {.x =       -12, .y =          -74.5   },
-  {.x =       33, .y =          -58.5   },
-  {.x =       -33, .y =          -58.5   },
-  {.x =       33, .y =          60.5    },
-  {.x =       -33, .y =          60.5    },
-  {.x =       22, .y =          73.5    },
-  {.x =       -22, .y =          73.5    },
-};
 
 static const int kPlayerCarCategoryBitmask = 0x01;
 static const int kEnemyCarCategoryBitmask = 0x02;
@@ -111,30 +102,30 @@ std::pair<float, float> EnemyCarNode::doMove() {
 
 bool EnemyCarNode::initPhysicsBody() {
 
-//  int polygonPointCount = 0;
-//  const Vec2*  polygonPointsArr = nullptr;
-//  switch(type) {
-//  case RT_small:
-//    polygonPointCount = smallPointsCount;
-//    polygonPointsArr = smallPoints;
-//    break;
-//  case RT_medium:
-//    polygonPointCount = mediumPointsCount;
-//    polygonPointsArr = mediumPoints;
-//    break;
-//  case RT_big:
-//    // C6_D1(c6, "called for big");
-//    polygonPointCount = bigPointsCount;
-//    polygonPointsArr = bigPoints;
-//    break;
+  const int kBodyPointsCount = 10;
+  const Vec2 kNormalizedBodyPoints[kBodyPointsCount] = {
+    {  .x = 0.09874990582466125, .y = 1.6862502098083496  },
+    {  .x = 0.21874994039535522, .y = 1.8612501621246338  },
+    {  .x = 0.38624992966651917, .y = 1.9212502241134644  },
+    {  .x = 0.5987498760223389, .y = 1.9212502241134644  },
+    {  .x = 0.7937499284744263, .y = 1.851250171661377  },
+    {  .x = 0.903749942779541, .y = 1.6862502098083496  },
+    {  .x = 0.9000000357627869, .y = 0.22500000894069672  },
+    {  .x = 0.75, .y = 0.07500000298023224        },
+    {  .x = 0.25, .y = 0.07500000298023224        },
+    {  .x = 0.09624981880187988, .y = 0.2412499487400055  }
+  };
+  Vec2 bodyPoints[kBodyPointsCount];
 
-//  default:
-//    C6_C1(c6, "Bad call");
-//    return false;
-//  }
+  const Size cs = getContentSize();
+  const float halfWidth = cs.width/2;
+  const float halfHeight = cs.height/2;
+  for (int i = 0; i< kBodyPointsCount; i++) {
+    bodyPoints[i].x = kNormalizedBodyPoints[i].x*cs.width - halfWidth;
+    bodyPoints[i].y = kNormalizedBodyPoints[i].y*cs.width - halfHeight;
+  }
 
-  PhysicsBody* physicsBody = PhysicsBody::createPolygon(yellowCarBodyPoints,
-                                                        kYellowCarBodyPointsCount,
+  PhysicsBody* physicsBody = PhysicsBody::createPolygon(bodyPoints, kBodyPointsCount,
                                                         PhysicsMaterial(0.1f, 1.0f, 0.0f));
   if (physicsBody == nullptr) {
     C6_D1(c6, "Failed to create ph body");
@@ -147,8 +138,6 @@ bool EnemyCarNode::initPhysicsBody() {
   physicsBody->setContactTestBitmask(0xFFFFFFFF);
 
   addComponent(physicsBody);
-
-
   return true;
 }
 
@@ -160,6 +149,8 @@ bool EnemyCarNode::initSelf() {
     C6_C2(c6, "Failed to init with file ", kYellowCarFrameName);
     return false;    //
   }
+
+  setOpacity(kElementsOpacity);
 
   if (!initPhysicsBody()) {
     return false;
@@ -217,20 +208,18 @@ void EnemyCarNode::setInitialPos(const int lane, const float value) {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-void EnemyCarNode::setLanes(const float leftLaneX, const float rightLaneX) {
+void EnemyCarNode::setRoadInfo(const RoadInfo& roadInfo) {
+  roadLength = roadInfo.enemyFinishPoint;
+
   currentLaneIndex = 1;
-  lanes[0] = rightLaneX;
-  lanes[1] = leftLaneX;
+  lanes[0] = roadInfo.rightLaneX;
+  lanes[1] = roadInfo.leftLaneX;
 
   if (initialY>=0) {
     setPosition(Vec2(lanes[currentLaneIndex], initialY));
   }
-}
 
-// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-void EnemyCarNode::setRoadLength(const int inRoadLength) {
-  roadLength = inRoadLength;
+  setScale(roadInfo.screenScaleFactor);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

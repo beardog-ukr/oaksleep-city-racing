@@ -2,6 +2,9 @@
 using namespace oaksleep_city_racing;
 #include "road/StaticElementsKeeper.h"
 #include "ui/GameEndScene.h"
+#include "ZOrderConstValues.h"
+
+#include <iostream> // cout
 
 #include "SixCatsLogger.h"
 #include "SixCatsLoggerMacro.h"
@@ -22,23 +25,6 @@ static const int kMoveSoundActionTag = 223;
 
 static const int kSingleMoveDistance = 400;
 static const float kSingleMoveInterval = 2.0;
-//const int PlayerCarNode::kTurnDistance = 200;
-
-static const int kRedCarBodyPointsCount = 12;
-static const Vec2 redCarBodyPoints[kRedCarBodyPointsCount] = {
-  {.x =  14, .y = -78     },
-  {.x = -14, .y = -78     },
-  {.x =  30, .y = -67     },
-  {.x = -29, .y = -67     },
-  {.x =  32, .y = -43     },
-  {.x = -32, .y = -43     },
-  {.x =  36, .y =  51      },
-  {.x = -36, .y =  51      },
-  {.x =  28, .y =  69      },
-  {.x = -29, .y =  69      },
-  {.x =  18, .y =  77      },
-  {.x = -16, .y =  77      },
-};
 
 static const int kPlayerCarCategoryBitmask = 0x01;
 static const int kEnemyCarCategoryBitmask = 0x02;
@@ -250,7 +236,7 @@ std::pair<float, float> PlayerCarNode::doMove() {
 float PlayerCarNode::doMoveToStart(const int windowHeight) {
   const int kEffectDuration = 2;
 
-  const Size carSize = getContentSize();
+  const Size carSize = getBoundingBox().size;// getContentSize();
   const int bottomDistance = floor(carSize.height /10); // take 10% of car height
   staticElementsKeeper->doMove(make_pair( windowHeight/2 - carSize.height - bottomDistance,
                                           kEffectDuration));
@@ -284,11 +270,17 @@ bool PlayerCarNode::fillRoadInfo(RoadInfo& roadInfo, const cocos2d::Size sceneSi
     return false;
   }
 
-  float laneStep = carSprite->getContentSize().width* (0.5 + 0.05);// half of the car width + 5%
+  carSprite->setScale(roadInfo.screenScaleFactor);
+
+  const Size scaledSize = carSprite->getBoundingBox().size;
+  //cout << "content size is "<< carSprite->getBoundingBox().width;
+  //cout << "x"<< carSprite->getBoundingBox().height << "\n";
+
+  float laneStep = scaledSize.width* (0.5 + 0.05);// half of the car width + 5%
   roadInfo.leftLaneX = sceneSize.width/2 - laneStep;
   roadInfo.rightLaneX = sceneSize.width/2 + laneStep;
 
-  roadInfo.turnDistance = carSprite->getContentSize().height * 1.5; // car height +50%
+  roadInfo.turnDistance = scaledSize.height * 1.5; // car height +50%
 
   return true;
 }
@@ -296,8 +288,33 @@ bool PlayerCarNode::fillRoadInfo(RoadInfo& roadInfo, const cocos2d::Size sceneSi
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool PlayerCarNode::initPhysicsBody() {
+  const int kRedCarBodyPointsCount = 12;
+  const Vec2 redCarNormalizedBodyPoints[kRedCarBodyPointsCount] = {
+    { .x = 0.061250150203704834, .y = 0.47124993801116943    },
+    { .x = 0.07875007390975952,  .y = 1.6087493896484375    },
+    { .x = 0.18375033140182495, .y = 1.916249394416809    },
+    { .x = 0.3487500846385956, .y = 1.983749508857727    },
+    { .x = 0.6512500643730164, .y = 1.983749508857727    },
+    { .x = 0.803750216960907, .y = 1.926249384880066    },
+    { .x = 0.9212501049041748, .y = 1.6187494993209839    },
+    { .x = 0.941250205039978, .y = 0.4687499403953552    },
+    { .x = 0.8612499833106995, .y = 0.17375054955482483    },
+    { .x = 0.6612499356269836, .y = 0.0712505578994751    },
+    { .x = 0.3537499010562897, .y = 0.0712505578994751    },
+    { .x = 0.1462499499320984, .y = 0.18375054001808167    }
+  };
 
-  PhysicsBody* physicsBody = PhysicsBody::createPolygon(redCarBodyPoints, kRedCarBodyPointsCount,
+
+  Vec2 bodyPoints[kRedCarBodyPointsCount];
+  const Size cs = getContentSize();
+  const float halfCsWidth = cs.width/2;
+  const float halfCsHeight = cs.height/2;
+  for (int i = 0; i<kRedCarBodyPointsCount; i++) {
+    bodyPoints[i].x = redCarNormalizedBodyPoints[i].x * cs.width - halfCsWidth;
+    bodyPoints[i].y = redCarNormalizedBodyPoints[i].y * cs.width - halfCsHeight;    //
+  }
+
+  PhysicsBody* physicsBody = PhysicsBody::createPolygon(bodyPoints, kRedCarBodyPointsCount,
                                                         PhysicsMaterial(0.1f, 1.0f, 0.0f));
   if (physicsBody == nullptr) {
     C6_D1(c6, "Failed to create ph body");
@@ -322,8 +339,7 @@ bool PlayerCarNode::initSelf() {
     return false;  //
   }
 
-
-//  setOpacity(50);
+  setOpacity(kElementsOpacity);
   setTag(kTag);
 
   if (!initPhysicsBody()) {
@@ -512,6 +528,8 @@ bool PlayerCarNode::setGearUp() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void PlayerCarNode::setRoadInfo(const RoadInfo& roadInfo) {
+  setScale(roadInfo.screenScaleFactor);
+
   // --- lanes
   currentLaneIndex = 1;
   lanes[0] = roadInfo.rightLaneX;
@@ -520,7 +538,7 @@ void PlayerCarNode::setRoadInfo(const RoadInfo& roadInfo) {
   // --- start position
   initialY = roadInfo.startPosition;
 
-  const Size carSize = getContentSize();
+  const Size carSize = getBoundingBox().size;// getContentSize();
   setPosition(Vec2(lanes[currentLaneIndex], initialY - carSize.height/2));
 
   staticElementsKeeper->setYPosition(roadInfo.startPosition);

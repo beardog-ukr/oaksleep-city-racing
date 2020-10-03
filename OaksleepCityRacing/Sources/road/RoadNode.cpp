@@ -29,6 +29,8 @@ static const struct {
   .terrain = "ocr/terrain/soil"
 };
 
+static const float kDesignResolutionWidth = 768.0;
+
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadNode::RoadNode() {
@@ -69,6 +71,7 @@ void RoadNode::fillRoadInfo(RoadInfo& roadInfo) {
   roadInfo.roadLength = racingLength;
   roadInfo.startPosition = startPosition;
   roadInfo.enemyFinishPoint = racingLength + windowSize.height;
+  roadInfo.screenScaleFactor = windowSize.width / kDesignResolutionWidth;
 
   if (!PlayerCarNode::fillRoadInfo(roadInfo, windowSize)) {
     C6_D1(c6, "failed to load probe sprite from frame name ");
@@ -84,7 +87,12 @@ bool RoadNode::initRoad() {
     return false;
   }
 
-  const Size spriteSize = sprite->getContentSize();
+  const float screenScaleFactor = windowSize.width / kDesignResolutionWidth;
+
+  Size spriteSize = sprite->getContentSize();
+  spriteSize.height = spriteSize.height*screenScaleFactor;
+  spriteSize.width = spriteSize.width*screenScaleFactor;
+
   int xPos = windowSize.width/2;
   int yPos = totalLength; //+ lround(spriteSize.height/2);
 
@@ -96,6 +104,7 @@ bool RoadNode::initRoad() {
     tsp->setAnchorPoint(Vec2(0.5, 0));
     tsp->setPosition(Vec2(xPos, yPos));
     tsp->setOpacity(kElementsOpacity);
+    tsp->setScale(screenScaleFactor);
 
     addChild(tsp, kRoadSceneZO.road);
 
@@ -137,7 +146,8 @@ bool RoadNode::initRoad() {
 
   int finishMarkPosition = racingLength + floor(sprite->getContentSize().height/2);
   sprite->setPosition(Vec2(xPos, finishMarkPosition));
-//  sprite->setOpacity(kElementsOpacity);
+  sprite->setOpacity(kElementsOpacity);
+  sprite->setScale(screenScaleFactor);
 
   addChild(sprite, kRoadSceneZO.roadLabel);
   C6_D2(c6, "added finish mark at ", finishMarkPosition);
@@ -152,11 +162,10 @@ bool RoadNode::initRoad() {
 bool RoadNode::initRoadStart() {
   totalLength = 0;
 
-  C6_D2(c6, "Window size height is ", windowSize.height );
+//  C6_D2(c6, "Window size height is ", windowSize.height );
+  const float screenScaleFactor = windowSize.width / kDesignResolutionWidth;
 
-//  const Size spriteSize = sprite->getContentSize();
   int xPos = windowSize.width/2;
-//  int yPos = 0;// lround(spriteSize.height/2);
 
   while (totalLength < windowSize.height/2) {
     Sprite* sprite = Sprite::createWithSpriteFrameName(kSpriteFileNames.road01);
@@ -165,20 +174,16 @@ bool RoadNode::initRoadStart() {
       return false;
     }
 
+    sprite->setScale(screenScaleFactor);
     sprite->setAnchorPoint(Vec2(0.5,0));
-
-    const Size spriteSize = sprite->getContentSize();
-
-//    int yPos = totalLength + floor(spriteSize.height/2) -1;
 
     sprite->setPosition(Vec2(xPos, totalLength));
     sprite->setOpacity(kElementsOpacity);
 
     addChild(sprite, kRoadSceneZO.road);
-    C6_D4(c6, "added sprite at ", totalLength, " sprite height is ", spriteSize.height );
 
-
-//    yPos += (spriteSize.height -1);
+    const Size spriteSize = sprite->getBoundingBox().size;//  getContentSize();
+    C6_T4(c6, "added sprite at ", totalLength, " sprite height is ", spriteSize.height );
     totalLength += spriteSize.height;  // later it will not depend on number of iterations
   }
 
@@ -187,8 +192,11 @@ bool RoadNode::initRoadStart() {
     C6_C2(c6, "Failed to open ", kSpriteFileNames.startMark);
     return false;
   }
+  sprite->setScale(screenScaleFactor);
 
-  startPosition = totalLength + floor(sprite->getContentSize().height/2);
+//  startPosition = totalLength + floor(sprite->getContentSize().height/2);
+  startPosition = totalLength; //+ floor(sprite->getBoundingBox().size.height/2);
+  sprite->setAnchorPoint(Vec2(0.5,0));
   sprite->setPosition(Vec2(xPos, startPosition));
   sprite->setOpacity(kElementsOpacity);
 

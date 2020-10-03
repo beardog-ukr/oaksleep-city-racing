@@ -6,6 +6,8 @@
 
 #include "SixCatsLoggerLoggable.h"
 
+#include "road/DataAdapters.h"
+
 namespace oaksleep_city_racing {
 
 class StaticElementsKeeper;
@@ -15,8 +17,7 @@ public:
   static EnemyCarNode* create(std::shared_ptr<SixCatsLogger> c6);
 
   void setInitialPos(const int lane, const float value);
-  void setLanes(const float leftLaneX, const float rightLaneX);
-  void setRoadLength(const int roadLength);
+  void setRoadInfo(const RoadInfo& roadInfo);
 
   void reactToBackAttack();
 

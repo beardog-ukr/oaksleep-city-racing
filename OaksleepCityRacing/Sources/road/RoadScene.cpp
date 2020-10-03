@@ -22,22 +22,6 @@ USING_NS_CC;
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-static const struct {
-  // string redCar;
-  string road01;
-  string road02;
-  string road03;
-  string terrain;
-} kSpriteFileNames = {
-  .road01 = "ocr_game/terrain/road_tile_01",
-  .road02 = "ocr_game/terrain/road_tile_02",
-  .road03 = "ocr_game/terrain/road_tile_03",
-  .terrain = "ocr_game/terrain/soil_tile"
-};
-
-static const int kElementsOpacity = 255; //must be 255 in release mode; this value is used
-                                         //during physics world debugging
-
 static const string kPlistFileName = "road_scene.plist";
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

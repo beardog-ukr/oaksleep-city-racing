@@ -38,16 +38,14 @@ EnemyCarsKeeper::~EnemyCarsKeeper() {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 bool EnemyCarsKeeper::generateCars(const RoadInfo &roadInfo, cocos2d::Node* carsParent) {
-//  roadLength = roadInfo;
-
   const Size currentWindowSize = carsParent->getContentSize();
 
-//  const float leftLane = currentWindowSize.width/2 - currentWindowSize.width/8;
-//  const float rightLane = currentWindowSize.width/2 + currentWindowSize.width/8;
+  int lengthAcc = roadInfo.startPosition;
+  bool needEmptyZone = false;
+  int previousLaneId = 0;
 
-  int lengthAcc = 0;//PlayerCarNode::kTurnDistance*3;
-  bool needEmptyZone = true;
-  int previousLaneId;
+  const int kProbEmptyZone = 30;// probability of an empty zone to appear
+  const int kProbRightLane = 75;// probability for the cat to appear in right(slow) lane
 
   const float emptyZoneLength = roadInfo.turnDistance*2;
 
@@ -58,9 +56,9 @@ bool EnemyCarsKeeper::generateCars(const RoadInfo &roadInfo, cocos2d::Node* cars
 
     int rv = getRandomECKValue();
 
-    if (rv<40) {
+    if (rv<kProbEmptyZone) {
       // add empty section on the road
-      lengthAcc += emptyZoneLength; // PlayerCarNode::kTurnDistance*3;
+      lengthAcc += emptyZoneLength; //
       needEmptyZone = false;
       previousLaneId = -1; // -1 is value for "empty zone"
     }
@@ -70,10 +68,10 @@ bool EnemyCarsKeeper::generateCars(const RoadInfo &roadInfo, cocos2d::Node* cars
         return false;
       }
 
-      enemyCar->setLanes(roadInfo.leftLaneX, roadInfo.rightLaneX);
+      enemyCar->setRoadInfo(roadInfo);
 
       int initialLane = 0;
-      if (rv>80) {
+      if (rv>kProbRightLane) {
         initialLane = 1;
       }
 
@@ -85,10 +83,8 @@ bool EnemyCarsKeeper::generateCars(const RoadInfo &roadInfo, cocos2d::Node* cars
 
       enemyCar->setInitialPos(initialLane, lengthAcc);
 
-      enemyCar->setRoadLength(roadInfo.enemyFinishPoint);
       carsParent->addChild(enemyCar, kRoadSceneZO.enemyCar);
 
-//      enemyCar->doMove();
       cars.push_back(enemyCar);
 
       lengthAcc += emptyZoneLength;
@@ -115,7 +111,7 @@ EnemyCarsKeeper* EnemyCarsKeeper::create(shared_ptr<SixCatsLogger> c6) {
     return nullptr;
   }
 
-//  pRet->autorelease();
+//  pRet->autorelease(); see task #1d45fcf79a
   return pRet;
 }
 

@@ -4,9 +4,9 @@
 
 #include "cocos2d.h"
 
-#include "road/DataAdapters.h"
-
 #include "SixCatsLoggerLoggable.h"
+
+#include "road/DataAdapters.h"
 
 namespace oaksleep_city_racing {
 
