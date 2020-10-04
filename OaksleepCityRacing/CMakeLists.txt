@@ -29,6 +29,10 @@ if(APPLE OR WINDOWS)
     cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
 
+#     Sources/SixCatsLogger.cpp
+#     Sources/SixCatsLoggerLoggable.cpp
+
+
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Sources/AppDelegate.cpp

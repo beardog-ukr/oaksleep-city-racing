@@ -67,10 +67,24 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
   // set FPS. the default value is 1.0/60 if you don't call this
   director->setAnimationInterval(1.0f / 60);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+  // Here goes a hack to get real screen resolution of the device and then fit to it
 
-  // Set the design resolution
+  // First, set some super-huge design resolution, no matter what
+  static cocos2d::Size designResolutionSize = cocos2d::Size(3600, 6400);
   glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
-                                  ResolutionPolicy::NO_BORDER);
+                                  ResolutionPolicy::EXACT_FIT);
+
+  // Second, get real resolution ans set it
+  Size frameSize = glview->getFrameSize();
+  glview->setDesignResolutionSize(frameSize.width, frameSize.height, ResolutionPolicy::EXACT_FIT);
+
+  // Note, all the scenes are able to scale their content appropriately to their size
+#else
+    // Setting design resolution for desktop applications, nothing special
+    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
+                                  ResolutionPolicy::EXACT_FIT);
+#endif
 
   register_all_packages();
 

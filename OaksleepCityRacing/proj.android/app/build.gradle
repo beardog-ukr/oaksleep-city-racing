@@ -36,6 +36,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../CMakeLists.txt"
+            version "3.14.5"
         }
     }
 
@@ -70,6 +71,7 @@ android {
             renderscriptDebuggable true
         }
     }
+    ndkVersion '21.0.6113669'
 }
 
 android.applicationVariants.all { variant ->
