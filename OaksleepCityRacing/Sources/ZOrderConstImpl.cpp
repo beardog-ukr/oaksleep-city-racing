@@ -23,5 +23,7 @@ const struct oaksleep_city_racing::RoadSceneZOrderValues oaksleep_city_racing::k
   .gearIndicator = 30
 };
 
-//Following value is used during physics world deburring
+//Following value is used during physics world debugging
 const int oaksleep_city_racing::kElementsOpacity = 255; //must be 255 in release mode;
+
+const float oaksleep_city_racing::kDesignResolutionWidth = 768.0;

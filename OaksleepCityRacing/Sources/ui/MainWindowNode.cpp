@@ -2,6 +2,9 @@
 using namespace oaksleep_city_racing;
 
 #include "road/RoadScene.h"
+//#include "ui/ScreenSizeNode.h"
+#include "ui/SettingsMainNode.h"
+#include "ui/UiWindowsManager.h"
 #include "ZOrderConstTypes.h"
 #include "ZOrderConstValues.h"
 
@@ -11,8 +14,6 @@ using namespace oaksleep_city_racing;
 
 USING_NS_CC;
 using namespace std;
-
-
 
 static const struct {
   string window;
@@ -42,13 +43,15 @@ MainWindowNode::~MainWindowNode() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-MainWindowNode* MainWindowNode::create(shared_ptr<SixCatsLogger> c6) {
+MainWindowNode* MainWindowNode::create(shared_ptr<UiWindowsManager> uwm,
+                                       shared_ptr<SixCatsLogger> c6) {
 
   MainWindowNode *pRet = new(std::nothrow) MainWindowNode();
   if (pRet ==nullptr) {
     return nullptr;
   }
 
+  pRet->uiWindowsManager = uwm;
   pRet->setLogger(c6);
 
   if (!pRet->initSelf()) {
@@ -171,7 +174,21 @@ void MainWindowNode::mcNewGame(cocos2d::Ref *pSender) {
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 void MainWindowNode::mcSettings(cocos2d::Ref *pSender) {
-  C6_D1(c6, "Not implemented yet");
+  C6_D1(c6, "need to call settings menu");
+
+//  const Size currentWindowSize = getContentSize();
+
+  SettingsMainNode* smNode = SettingsMainNode::create(uiWindowsManager,c6);
+  if (smNode == nullptr) {
+    return;
+  }
+
+  smNode->setScale(getScale());
+//  smNode->setPosition(currentWindowSize.width + currentWindowSize.width/2,
+//                      currentWindowSize.height/2);
+  getParent()->addChild(smNode, kMainMenuSceneZO.window);
+
+  uiWindowsManager->swapNodes(this, smNode);
 }
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

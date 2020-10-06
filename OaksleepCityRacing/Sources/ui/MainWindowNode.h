@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory> // shared_ptr
 #include <utility> // std::pair
 
 #include "cocos2d.h"
@@ -8,9 +9,12 @@
 
 namespace oaksleep_city_racing {
 
+class UiWindowsManager;
+
 class MainWindowNode : public cocos2d::Sprite, virtual public SixCatsLoggerLoggable {
 public:
-  static MainWindowNode* create(std::shared_ptr<SixCatsLogger> c6);
+  static MainWindowNode* create(std::shared_ptr<UiWindowsManager> uwm,
+                                std::shared_ptr<SixCatsLogger> c6);
 
 protected:
   MainWindowNode();
@@ -24,6 +28,7 @@ protected:
   bool initMainLabel();
   bool initMenuButtons();
 
+  std::shared_ptr<UiWindowsManager> uiWindowsManager;
 };
 
 }

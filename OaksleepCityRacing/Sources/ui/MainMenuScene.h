@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory> // shared_ptr
+
 #include "cocos2d.h"
 #include "SixCatsLoggerLoggable.h"
 
 namespace oaksleep_city_racing {
+
+class UiWindowsManager;
 
 class MainMenuScene : public cocos2d::Scene,  virtual public SixCatsLoggerLoggable {
 public:
@@ -15,8 +19,11 @@ protected:
 
   virtual bool init();
   bool initBackground();
-  bool initMenu();
   bool initKeyboardProcessing();
+  bool initMenu(const float scaleFactor);
+  bool initSettingsMenu(const float scaleFactor);
+
+  std::shared_ptr<UiWindowsManager>  uiWindowsManager;
 
   void onKeyPressedScene(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *);
 

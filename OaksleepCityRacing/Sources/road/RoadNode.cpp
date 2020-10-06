@@ -29,8 +29,6 @@ static const struct {
   .terrain = "ocr/terrain/soil"
 };
 
-static const float kDesignResolutionWidth = 768.0;
-
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 RoadNode::RoadNode() {

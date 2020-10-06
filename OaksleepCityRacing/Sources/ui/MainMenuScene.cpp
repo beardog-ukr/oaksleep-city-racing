@@ -1,7 +1,9 @@
 #include "MainMenuScene.h"
 
-#include "../ZOrderConstTypes.h"
-#include "../ZOrderConstValues.h"
+#include "ZOrderConstTypes.h"
+#include "ZOrderConstValues.h"
+#include "ui/SettingsMainNode.h"
+#include "ui/UiWindowsManager.h"
 
 #include "ui/MainWindowNode.h"
 
@@ -23,7 +25,7 @@ static const struct {
   string buttonPlay;
   string buttonSettings;
 } kSpriteFileNames = {
-  .background = "ocr_game/main/background",
+  .background = "ocr_game/main/grass",
   .window = "ocr_game/main/base_window",
   .buttonExit = "ocr_game/main/button_exit",
   .buttonPlay = "ocr_game/main/button_play",
@@ -80,13 +82,21 @@ bool MainMenuScene::init() {
     return false;
   }
 
+  const float screenScaleFactor = getContentSize().width / kDesignResolutionWidth;
+
+  uiWindowsManager = make_shared<UiWindowsManager>(getContentSize(), c6);
+
   if (!initBackground()) {
     return false;
   }
 
-  if (!initMenu()) {
+  if (!initMenu(screenScaleFactor)) {
     return false;
   }
+
+//  if (!initSettingsMenu(screenScaleFactor)) {
+//    return false;
+//  }
 
   if (!initKeyboardProcessing()) {
     return false;
@@ -146,16 +156,35 @@ bool MainMenuScene::initBackground() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-bool MainMenuScene::initMenu() {
+bool MainMenuScene::initMenu(const float scaleFactor) {
   const Size currentWindowSize = getContentSize();
 
-  MainWindowNode* mwNode = MainWindowNode::create(c6);
+  MainWindowNode* mwNode = MainWindowNode::create(uiWindowsManager, c6);
   if (mwNode == nullptr) {
     return false;
   }
 
+  mwNode->setScale(scaleFactor);
   mwNode->setPosition(currentWindowSize.width/2, currentWindowSize.height/2);
   addChild(mwNode, kMainMenuSceneZO.window);
+
+  return true;
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+bool MainMenuScene::initSettingsMenu(const float scaleFactor) {
+  const Size currentWindowSize = getContentSize();
+
+  SettingsMainNode* smNode = SettingsMainNode::create(uiWindowsManager,c6);
+  if (smNode == nullptr) {
+    return false;
+  }
+
+  smNode->setScale(scaleFactor);
+  smNode->setPosition(currentWindowSize.width + currentWindowSize.width/2,
+                      currentWindowSize.height/2);
+  addChild(smNode, kMainMenuSceneZO.window);
 
   return true;
 }

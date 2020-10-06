@@ -45,8 +45,13 @@ list(APPEND GAME_SOURCE
      Sources/road/StaticElementsKeeper.cpp
      Sources/ui/GameEndScene.cpp
      Sources/ui/GameEndWindowNode.cpp
+     Sources/ui/GameplaySettingsNode.cpp
      Sources/ui/MainMenuScene.cpp
      Sources/ui/MainWindowNode.cpp
+     Sources/ui/ScreenSizeNode.cpp
+     Sources/ui/SettingsMainNode.cpp
+     Sources/ui/SoundSettingsNode.cpp
+     Sources/ui/UiWindowsManager.cpp
      )
 list(APPEND GAME_HEADER
      Sources/AppDelegate.h
@@ -61,8 +66,13 @@ list(APPEND GAME_HEADER
      Sources/road/StaticElementsKeeper.h
      Sources/ui/GameEndScene.h
      Sources/ui/GameEndWindowNode.h
+     Sources/ui/GameplaySettingsNode.cpp
      Sources/ui/MainMenuScene.h
      Sources/ui/MainWindowNode.h
+     Sources/ui/ScreenSizeNode.h
+     Sources/ui/SettingsMainNode.h
+     Sources/ui/SoundSettingsNode.h
+     Sources/ui/UiWindowsManager.h
      )
 
 if(ANDROID)

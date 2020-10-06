@@ -81,8 +81,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
   // Note, all the scenes are able to scale their content appropriately to their size
 #else
-    // Setting design resolution for desktop applications, nothing special
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
+  // Setting design resolution for desktop applications, nothing special
+  glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
                                   ResolutionPolicy::EXACT_FIT);
 #endif
 

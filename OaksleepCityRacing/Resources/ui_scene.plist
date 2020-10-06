@@ -4,18 +4,63 @@
  <dict>
   <key>frames</key>
   <dict>
-   <key>ocr_game/main/background</key>
+   <key>ocr_game/buttons/indicator_off</key>
    <dict>
     <key>aliases</key>
     <array/>
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{223,223}</string>
+    <string>{29,70}</string>
     <key>spriteSourceSize</key>
-    <string>{223,223}</string>
+    <string>{29,70}</string>
     <key>textureRect</key>
-    <string>{{362,0},{223,223}}</string>
+    <string>{{463,622},{29,70}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/buttons/indicator_on</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{29,70}</string>
+    <key>spriteSourceSize</key>
+    <string>{29,70}</string>
+    <key>textureRect</key>
+    <string>{{658,625},{29,70}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/buttons/left</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{59,110}</string>
+    <key>spriteSourceSize</key>
+    <string>{59,110}</string>
+    <key>textureRect</key>
+    <string>{{402,622},{59,110}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/buttons/right</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{59,110}</string>
+    <key>spriteSourceSize</key>
+    <string>{59,110}</string>
+    <key>textureRect</key>
+    <string>{{904,514},{59,110}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -26,11 +71,41 @@
     <key>spriteOffset</key>
     <string>{0,0}</string>
     <key>spriteSize</key>
-    <string>{360,404}</string>
+    <string>{500,620}</string>
     <key>spriteSourceSize</key>
-    <string>{360,404}</string>
+    <string>{500,620}</string>
     <key>textureRect</key>
-    <string>{{0,0},{360,404}}</string>
+    <string>{{0,0},{500,620}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/main/button_base</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{400,109}</string>
+    <key>spriteSourceSize</key>
+    <string>{400,109}</string>
+    <key>textureRect</key>
+    <string>{{0,622},{400,109}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/main/button_base2</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{400,109}</string>
+    <key>spriteSourceSize</key>
+    <string>{400,109}</string>
+    <key>textureRect</key>
+    <string>{{502,514},{400,109}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -45,7 +120,7 @@
     <key>spriteSourceSize</key>
     <string>{50,51}</string>
     <key>textureRect</key>
-    <string>{{362,331},{50,51}}</string>
+    <string>{{606,625},{50,51}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -60,7 +135,7 @@
     <key>spriteSourceSize</key>
     <string>{50,51}</string>
     <key>textureRect</key>
-    <string>{{362,225},{50,51}}</string>
+    <string>{{502,625},{50,51}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -75,7 +150,7 @@
     <key>spriteSourceSize</key>
     <string>{50,51}</string>
     <key>textureRect</key>
-    <string>{{414,225},{50,51}}</string>
+    <string>{{502,678},{50,51}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -90,7 +165,22 @@
     <key>spriteSourceSize</key>
     <string>{50,51}</string>
     <key>textureRect</key>
-    <string>{{362,278},{50,51}}</string>
+    <string>{{554,625},{50,51}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>ocr_game/main/grass</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{512,512}</string>
+    <key>spriteSourceSize</key>
+    <string>{512,512}</string>
+    <key>textureRect</key>
+    <string>{{502,0},{512,512}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -100,7 +190,7 @@
    <key>format</key>
    <integer>3</integer>
    <key>size</key>
-   <string>{587,406}</string>
+   <string>{1016,734}</string>
    <key>textureFileName</key>
    <string>ui_scene.png</string>
   </dict>
